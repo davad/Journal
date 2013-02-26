@@ -260,7 +260,7 @@ window.require.register("collections/posts", function(exports, require, module) 
           success: function(collection, response, options) {
             var fromCache;
             _this.timesLoaded += 1;
-            if (response[0].id === _this.first().id) {
+            if ((response[0] != null) && response[0].id === _this.first().id) {
               fromCache = true;
             }
             if (_.last(response) == null) {
