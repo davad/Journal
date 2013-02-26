@@ -74,7 +74,7 @@ class exports.Posts extends Backbone.Collection
           @timesLoaded += 1
 
           # Backbone.cachingSync always returns the first 10 posts.
-          if response[0].id is @first().id
+          if response[0]? and response[0].id is @first().id
             fromCache = true
 
           # Backbone.cacheSync returns junk sometimes.
