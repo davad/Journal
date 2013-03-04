@@ -260,6 +260,7 @@ window.require.register("collections/posts", function(exports, require, module) 
           success: function(collection, response, options) {
             var fromCache;
             _this.timesLoaded += 1;
+            _this.sort();
             if ((response[0] != null) && response[0].id === _this.first().id) {
               fromCache = true;
             }
@@ -754,8 +755,7 @@ window.require.register("models/post", function(exports, require, module) {
 
     Post.prototype.defaults = {
       title: '',
-      body: '',
-      created: new Date().toISOString()
+      body: ''
     };
 
     Post.prototype.url = function() {
@@ -769,6 +769,9 @@ window.require.register("models/post", function(exports, require, module) {
     };
 
     Post.prototype.initialize = function() {
+      this.set({
+        created: new Date().toISOString()
+      });
       return this.on('request', function() {
         if ((this.get('body') != null) && (this.get('title') != null)) {
           return this.renderThings(true);
@@ -788,7 +791,7 @@ window.require.register("models/post", function(exports, require, module) {
         silent: true
       });
       this.set({
-        rendered_created: moment(this.get('created')).format("dddd, MMMM Do YYYY")
+        rendered_created: moment.utc(this.get('created')).format("dddd, MMMM Do YYYY")
       }, {
         silent: true
       });
@@ -1092,7 +1095,7 @@ window.require.register("views/post_edit_view", function(exports, require, modul
     PostEditView.prototype.id = 'post-edit';
 
     PostEditView.prototype.initialize = function() {
-      return this.throttledAutoScroll = _.throttle(this._autoscroll, 200);
+      return this.throttledAutoScroll = _.throttle(this._autoscroll, 250);
     };
 
     PostEditView.prototype.events = {
@@ -1102,11 +1105,12 @@ window.require.register("views/post_edit_view", function(exports, require, modul
       'click .show-date-edit': 'toggleDateEdit',
       'click .save-draft': 'draftSave',
       'keypress': '_draftSave',
-      'keydown .body textarea': 'throttledAutoScrollCallback'
+      'keydown .body textarea': 'throttledAutoScroll'
     };
 
     PostEditView.prototype.render = function() {
-      var _this = this;
+      var lines,
+        _this = this;
       if (((this.model.get('nid') != null) || (this.model.id != null)) && (this.model.get('body') === "" || this.model.get('title') === "")) {
         this.$el.html("<h2>Loading post... " + (app.templates.throbber('show', '21px')) + " </h2>");
       } else {
@@ -1122,11 +1126,12 @@ window.require.register("views/post_edit_view", function(exports, require, modul
           placeholder: 'Type your title here&hellip;',
           lines: 1
         }).render());
+        lines = Math.min(18, Math.round(($(window).height() - 300) / 21));
         this.addChildView(new ExpandingTextareaView({
           el: this.$('.body'),
           edit_text: this.model.get('body'),
           placeholder: 'Start typing your post here&hellip;',
-          lines: 20
+          lines: lines
         }).render());
         _.defer(function() {
           if (_this.options.focusTitle) {
@@ -1140,10 +1145,6 @@ window.require.register("views/post_edit_view", function(exports, require, modul
         });
       }
       return this;
-    };
-
-    PostEditView.prototype.throttledAutoScrollCallback = function() {
-      return this.throttledAutoScroll();
     };
 
     PostEditView.prototype._autoscroll = function(e) {
@@ -1165,7 +1166,7 @@ window.require.register("views/post_edit_view", function(exports, require, modul
           scrollTop: $(document).height() - $(window).height()
         });
       }
-      if (cursorPosition < 200) {
+      if (cursorPosition < 150 && $(window).scrollTop() > 50 && distanceTextareaToTop < 200) {
         return $("html, body").animate({
           scrollTop: 0
         });
@@ -1434,11 +1435,13 @@ window.require.register("views/posts_view", function(exports, require, module) {
     };
 
     PostsView.prototype.showLoading = function() {
-      return this.$('#loading-posts').show();
+      this.$('#loading-posts').show();
+      return this.$('.js-top-loading').show();
     };
 
     PostsView.prototype.hideLoading = function() {
-      return this.$('#loading-posts').hide();
+      this.$('#loading-posts').hide();
+      return this.$('.js-top-loading').hide();
     };
 
     PostsView.prototype.addAll = function() {
@@ -1830,7 +1833,9 @@ window.require.register("views/templates/posts", function(exports, require, modu
     (function() {
       (function() {
       
-        __out.push('<a class="button post-action" href="/posts/new">New post</a>\n<div class="posts"></div>\n<div id="loading-posts">\n  <em>Loading posts...</em> ');
+        __out.push(app.templates.throbber('js-top-loading global-loading', '24px'));
+      
+        __out.push('\n<a class="button post-action" href="/posts/new">New post</a>\n<div class="posts"></div>\n<div id="loading-posts">\n  <em>Loading posts...</em> ');
       
         __out.push(app.templates.throbber('show js-loading', '24px'));
       
