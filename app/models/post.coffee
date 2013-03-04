@@ -3,7 +3,6 @@ module.exports = class Post extends Backbone.Model
   defaults:
     title: ''
     body: ''
-    created: new Date().toISOString()
 
   url: ->
     if @get('id')
@@ -14,6 +13,7 @@ module.exports = class Post extends Backbone.Model
       @collection.url
 
   initialize: ->
+    @set created: new Date().toISOString()
     @on 'request', ->
       if @get('body')? and @get('title')?
         @renderThings(true)
@@ -25,7 +25,7 @@ module.exports = class Post extends Backbone.Model
 
     html = marked(@get('body'))
     @set { rendered_body: html }, silent: true
-    @set { rendered_created: moment(@get('created')).format("dddd, MMMM Do YYYY") }, silent: true
+    @set { rendered_created: moment.utc(@get('created')).format("dddd, MMMM Do YYYY") }, silent: true
 
     # Created a shortened version of the post for postsView
     if @get('body').length > 300
