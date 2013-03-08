@@ -164,8 +164,6 @@ window.require.register("collections/posts", function(exports, require, module) 
 
     Posts.prototype.model = Post;
 
-    Posts.prototype.sync = Backbone.cachingSync(Backbone.sync, 'posts', null, true);
-
     Posts.prototype.initialize = function() {
       var _this = this;
       this.lastPost = "";
@@ -178,6 +176,10 @@ window.require.register("collections/posts", function(exports, require, module) 
           return moment(post.get('created')).unix();
         });
       });
+      this.burry = new Burry.Store('posts');
+      if (this.burry.get('__ids__') != null) {
+        this.loadFromCache();
+      }
       return app.eventBus.on('visibilitychange', function(state) {
         if (state === "visible") {
           if (moment().diff(moment(_this.lastFetch), 'minutes') > 15) {
@@ -238,6 +240,9 @@ window.require.register("collections/posts", function(exports, require, module) 
       if (override == null) {
         override = false;
       }
+      if (this.loadedAllThePosts) {
+        return;
+      }
       if (!this.isLoading || override) {
         this.loading(true);
         setTimeout(function() {
@@ -258,18 +263,10 @@ window.require.register("collections/posts", function(exports, require, module) 
             created: created
           },
           success: function(collection, response, options) {
-            var fromCache;
-            _this.timesLoaded += 1;
-            _this.sort();
-            if ((response[0] != null) && response[0].id === _this.first().id) {
-              fromCache = true;
-            }
-            if (_.last(response) == null) {
-              return;
-            }
+            var post, _i, _len, _ref;
             _this.lastFetch = new Date().toJSON();
             if (_.isString(response)) {
-              app.eventBus.off(null, null, _this);
+              _this.loadedAllThePosts = true;
               _this.loading(false);
               return;
             }
@@ -278,11 +275,11 @@ window.require.register("collections/posts", function(exports, require, module) 
             if (_this.newLastPost < _this.lastPost || _this.lastPost === "") {
               _this.lastPost = _this.newLastPost;
             }
-            if (!fromCache) {
-              _this.loading(false);
-            }
-            if (_this.timesLoaded === 2) {
-              _this.loading(false);
+            _this.loading(false);
+            _ref = _this.models;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              post = _ref[_i];
+              _this.cachePost(post);
             }
             return _.defer(function() {
               return _this.setCacheIds();
@@ -308,7 +305,41 @@ window.require.register("collections/posts", function(exports, require, module) 
     };
 
     Posts.prototype.setCacheIds = function() {
-      return this.burry.set('__ids__', _.pluck(this.first(10), 'id'));
+      var nids, post, posts;
+      posts = this.first(10);
+      nids = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = posts.length; _i < _len; _i++) {
+          post = posts[_i];
+          _results.push(post.get('nid'));
+        }
+        return _results;
+      })();
+      return this.burry.set('__ids__', nids);
+    };
+
+    Posts.prototype.cachePost = function(post) {
+      return this.burry.set("posts_pid_" + (post.get('nid')), post.toJSON());
+    };
+
+    Posts.prototype.loadFromCache = function() {
+      var nid, post, posts, postsIds, _i, _len;
+      postsIds = this.burry.get('__ids__');
+      posts = [];
+      for (_i = 0, _len = postsIds.length; _i < _len; _i++) {
+        nid = postsIds[_i];
+        post = this.loadNidFromCache(nid);
+        if (post != null) {
+          posts.push(post);
+        }
+      }
+      this.reset(posts);
+      return this.setMaxOldPostFromCollection();
+    };
+
+    Posts.prototype.loadNidFromCache = function(nid) {
+      return this.burry.get("posts_pid_" + nid);
     };
 
     return Posts;
@@ -317,9 +348,11 @@ window.require.register("collections/posts", function(exports, require, module) 
   
 });
 window.require.register("collections/posts_cache", function(exports, require, module) {
-  var PostsCache,
+  var Post, PostsCache,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  Post = require('models/post');
 
   module.exports = PostsCache = (function(_super) {
 
@@ -330,10 +363,36 @@ window.require.register("collections/posts_cache", function(exports, require, mo
     }
 
     PostsCache.prototype.getByNid = function(nid) {
+      var json, post;
       nid = parseInt(nid, 10);
-      return this.find(function(post) {
+      if (this.find(function(post) {
         return post.get('nid') === nid;
+      }) != null) {
+        return this.find(function(post) {
+          return post.get('nid') === nid;
+        });
+      } else if (app.collections.posts.burry.get("posts_pid_" + nid) != null) {
+        json = app.collections.posts.burry.get("posts_pid_" + nid);
+        post = new Post(json);
+        post.fetch();
+        this.add(post);
+        return post;
+      } else {
+        return this.fetchPost(nid);
+      }
+    };
+
+    PostsCache.prototype.fetchPost = function(pid) {
+      var post;
+      post = new Post({
+        nid: pid,
+        id: null
       });
+      post.fetch({
+        nid: pid
+      });
+      this.add(post);
+      return post;
     };
 
     return PostsCache;
@@ -468,10 +527,17 @@ window.require.register("geolocation", function(exports, require, module) {
     };
 
     Geolocation.prototype.getLatitudeLongitude = function() {
-      return {
-        latitude: this.position.coords.latitude,
-        longitude: this.position.coords.longitude
-      };
+      if (this.position != null) {
+        return {
+          latitude: this.position.coords.latitude,
+          longitude: this.position.coords.longitude
+        };
+      } else {
+        return {
+          latitude: "",
+          longitude: ""
+        };
+      }
     };
 
     return Geolocation;
@@ -516,18 +582,8 @@ window.require.register("helpers", function(exports, require, module) {
     if (nid) {
       if (app.collections.posts.getByNid(id)) {
         return app.collections.posts.getByNid(id);
-      } else if (app.collections.postsCache.getByNid(id)) {
-        return app.collections.postsCache.getByNid(id);
       } else {
-        post = new Post({
-          nid: id,
-          id: null
-        });
-        post.fetch({
-          nid: id
-        });
-        app.collections.postsCache.add(post);
-        return post;
+        return app.collections.postsCache.getByNid(id);
       }
     } else {
       if (app.collections.posts.get(id)) {
@@ -769,12 +825,10 @@ window.require.register("models/post", function(exports, require, module) {
     };
 
     Post.prototype.initialize = function() {
-      this.set({
-        created: new Date().toISOString()
-      });
-      return this.on('request', function() {
+      return this.on('sync', function() {
         if ((this.get('body') != null) && (this.get('title') != null)) {
-          return this.renderThings(true);
+          this.renderThings(true);
+          return app.collections.posts.cachePost(this);
         }
       });
     };
@@ -919,6 +973,9 @@ window.require.register("routers/main_router", function(exports, require, module
       document.body.scrollTop = document.documentElement.scrollTop = 0;
       newPost = new Post({}, {
         collection: app.collections.posts
+      });
+      newPost.set({
+        created: new Date().toISOString()
       });
       draftModel = new Draft({}, {
         collection: app.collections.drafts
@@ -1422,7 +1479,7 @@ window.require.register("views/posts_view", function(exports, require, module) {
       }
       this.addAll();
       _.defer(function() {
-        console.log((new Date().getTime() - performance.timing.navigationStart) / 1000);
+        console.log("rendering postsView", (new Date().getTime() - performance.timing.navigationStart) / 1000);
         return _this.debouncedCachePostPositions();
       });
       return this;
