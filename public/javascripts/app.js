@@ -79,8 +79,21 @@
   globals.require.brunch = true;
 })();
 
-window.require.register("backbone_extensions", function(exports, require, module) {
+window.require.register("alert_on_appcache_updates", function(exports, require, module) {
+  window.addEventListener('load', function(e) {
+    return window.applicationCache.addEventListener('updateready', function(e) {
+      if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
+        window.applicationCache.swapCache();
+        $('body').append("<p class='alert-message'>A new version of the site is available, <a href='/'>reload now</a></p>");
+        return $(document).on('click', function() {
+          return window.location.reload();
+        });
+      }
+    }, false);
+  }, false);
   
+});
+window.require.register("backbone_extensions", function(exports, require, module) {
   Backbone.View.prototype.close = function() {
     this.off();
     this.remove();
@@ -111,18 +124,18 @@ window.require.register("backbone_extensions", function(exports, require, module
   
 });
 window.require.register("collections/drafts", function(exports, require, module) {
-  var Draft, Drafts,
+  var Draft, Drafts, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Draft = require('models/draft');
 
   module.exports = Drafts = (function(_super) {
-
     __extends(Drafts, _super);
 
     function Drafts() {
-      return Drafts.__super__.constructor.apply(this, arguments);
+      _ref = Drafts.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     Drafts.prototype.url = '/drafts';
@@ -146,18 +159,18 @@ window.require.register("collections/drafts", function(exports, require, module)
   
 });
 window.require.register("collections/posts", function(exports, require, module) {
-  var Post,
+  var Post, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Post = require('models/post');
 
   exports.Posts = (function(_super) {
-
     __extends(Posts, _super);
 
     function Posts() {
-      return Posts.__super__.constructor.apply(this, arguments);
+      _ref = Posts.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     Posts.prototype.url = '/posts';
@@ -166,16 +179,17 @@ window.require.register("collections/posts", function(exports, require, module) 
 
     Posts.prototype.initialize = function() {
       var _this = this;
+
       this.lastPost = "";
       this.timesLoaded = 0;
       this.loading(false);
       this.on('set_cache_ids', this.setCacheIds);
       this.postsViewActive = false;
-      this.setMaxOldPostFromCollection = _.once(function() {
-        return _this.maxOld = _this.max(function(post) {
+      this.setMaxNewPostFromCollection = function() {
+        return _this.maxNew = _this.max(function(post) {
           return moment(post.get('created')).unix();
         });
-      });
+      };
       this.burry = new Burry.Store('posts');
       if (this.burry.get('__ids__') != null) {
         this.loadFromCache();
@@ -220,6 +234,7 @@ window.require.register("collections/posts", function(exports, require, module) 
 
     Posts.prototype.loadChangesSinceLastFetch = function() {
       var _this = this;
+
       return this.fetch({
         update: true,
         remove: false,
@@ -237,6 +252,7 @@ window.require.register("collections/posts", function(exports, require, module) 
     Posts.prototype.load = function(override) {
       var created,
         _this = this;
+
       if (override == null) {
         override = false;
       }
@@ -263,7 +279,8 @@ window.require.register("collections/posts", function(exports, require, module) 
             created: created
           },
           success: function(collection, response, options) {
-            var post, _i, _len, _ref;
+            var post, _i, _len, _ref1;
+
             _this.lastFetch = new Date().toJSON();
             if (_.isString(response)) {
               _this.loadedAllThePosts = true;
@@ -276,14 +293,15 @@ window.require.register("collections/posts", function(exports, require, module) 
               _this.lastPost = _this.newLastPost;
             }
             _this.loading(false);
-            _ref = _this.models;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              post = _ref[_i];
+            _ref1 = _this.models;
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              post = _ref1[_i];
               _this.cachePost(post);
             }
-            return _.defer(function() {
+            _.defer(function() {
               return _this.setCacheIds();
             });
+            return _this.setMaxNewPostFromCollection();
           }
         });
       }
@@ -292,12 +310,12 @@ window.require.register("collections/posts", function(exports, require, module) 
     Posts.prototype.resetCollection = function(response) {
       var maxNew,
         _this = this;
-      this.setMaxOldPostFromCollection();
+
       maxNew = _.max(response, function(post) {
         return moment(post.created).unix();
       });
-      if ((this.maxOld != null) && (maxNew != null) && this.maxOld.get('created') < maxNew.created) {
-        this.maxOld = this.first();
+      if ((this.maxNew != null) && (maxNew != null) && this.maxNew.get('created') < maxNew.created) {
+        this.maxNew = this.first();
         return _.defer(function() {
           return _this.trigger('reset');
         });
@@ -306,9 +324,11 @@ window.require.register("collections/posts", function(exports, require, module) 
 
     Posts.prototype.setCacheIds = function() {
       var nids, post, posts;
+
       posts = this.first(10);
       nids = (function() {
         var _i, _len, _results;
+
         _results = [];
         for (_i = 0, _len = posts.length; _i < _len; _i++) {
           post = posts[_i];
@@ -325,6 +345,7 @@ window.require.register("collections/posts", function(exports, require, module) 
 
     Posts.prototype.loadFromCache = function() {
       var nid, post, posts, postsIds, _i, _len;
+
       postsIds = this.burry.get('__ids__');
       posts = [];
       for (_i = 0, _len = postsIds.length; _i < _len; _i++) {
@@ -335,7 +356,7 @@ window.require.register("collections/posts", function(exports, require, module) 
         }
       }
       this.reset(posts);
-      return this.setMaxOldPostFromCollection();
+      return this.setMaxNewPostFromCollection();
     };
 
     Posts.prototype.loadNidFromCache = function(nid) {
@@ -348,22 +369,23 @@ window.require.register("collections/posts", function(exports, require, module) 
   
 });
 window.require.register("collections/posts_cache", function(exports, require, module) {
-  var Post, PostsCache,
+  var Post, PostsCache, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Post = require('models/post');
 
   module.exports = PostsCache = (function(_super) {
-
     __extends(PostsCache, _super);
 
     function PostsCache() {
-      return PostsCache.__super__.constructor.apply(this, arguments);
+      _ref = PostsCache.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     PostsCache.prototype.getByNid = function(nid) {
       var json, post;
+
       nid = parseInt(nid, 10);
       if (this.find(function(post) {
         return post.get('nid') === nid;
@@ -384,6 +406,7 @@ window.require.register("collections/posts_cache", function(exports, require, mo
 
     PostsCache.prototype.fetchPost = function(pid) {
       var post;
+
       post = new Post({
         nid: pid,
         id: null
@@ -401,18 +424,18 @@ window.require.register("collections/posts_cache", function(exports, require, mo
   
 });
 window.require.register("collections/search", function(exports, require, module) {
-  var Result, Search,
+  var Result, Search, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Result = require('models/result');
 
   module.exports = Search = (function(_super) {
-
     __extends(Search, _super);
 
     function Search() {
-      return Search.__super__.constructor.apply(this, arguments);
+      _ref = Search.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     Search.prototype.model = Result;
@@ -420,24 +443,26 @@ window.require.register("collections/search", function(exports, require, module)
     Search.prototype.query = function(query) {
       var start,
         _this = this;
+
+      this.trigger('search:started');
       this.query_str = query;
       start = new Date();
       this.reset();
       if (query !== "") {
         return app.util.search(query, function(results) {
-          var entry, year, _i, _len, _ref, _results;
+          var entry, year, _i, _len, _ref1;
+
           _this.searchtime = new Date() - start;
           _this.total = results.hits.total;
           _this.max_score = results.hits.max_score;
           _this.reset(results.hits.hits);
-          _ref = results.facets.year.entries;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            entry = _ref[_i];
+          _ref1 = results.facets.year.entries;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            entry = _ref1[_i];
             year = moment.utc(entry.time).year();
-            _results.push(console.log(year + ": " + entry.count));
+            console.log(year + ": " + entry.count);
           }
-          return _results;
+          return _this.trigger('search:complete');
         });
       }
     };
@@ -462,6 +487,7 @@ window.require.register("file_drop_handler", function(exports, require, module) 
 
   $('body').on('drop', function(e) {
     var file, files, _i, _len, _results;
+
     e.preventDefault();
     e = e.originalEvent;
     console.log($('.body textarea').length);
@@ -478,6 +504,7 @@ window.require.register("file_drop_handler", function(exports, require, module) 
 
   createAttachment = function(file) {
     var attachmentText, data, uid;
+
     uid = ['kylemathews', (new Date).getTime(), 'raw'].join('-');
     console.log(uid);
     data = new FormData();
@@ -504,12 +531,9 @@ window.require.register("geolocation", function(exports, require, module) {
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Geolocation = (function() {
-
     function Geolocation() {
       this.error = __bind(this.error, this);
-
-      this.success = __bind(this.success, this);
-      if (navigator.geolocation) {
+      this.success = __bind(this.success, this);    if (navigator.geolocation) {
         console.log('Geolocation is supported!');
         navigator.geolocation.getCurrentPosition(this.success, this.error);
       } else {
@@ -553,9 +577,9 @@ window.require.register("helpers", function(exports, require, module) {
   Post = require('models/post');
 
   exports.BrunchApplication = (function() {
-
     function BrunchApplication() {
       var _this = this;
+
       _.defer(function() {
         _this.initialize();
         return Backbone.history.start({
@@ -576,6 +600,7 @@ window.require.register("helpers", function(exports, require, module) {
 
   exports.loadPostModel = function(id, nid) {
     var post;
+
     if (nid == null) {
       nid = false;
     }
@@ -601,6 +626,7 @@ window.require.register("helpers", function(exports, require, module) {
 
   exports.clickHandler = function(e) {
     var href;
+
     if (!(e.target.tagName === 'A' && ($(e.target).attr('href') != null))) {
       return;
     }
@@ -618,6 +644,7 @@ window.require.register("helpers", function(exports, require, module) {
 
   exports.scrollPosition = function() {
     var currentPosition, throttled;
+
     currentPosition = function() {
       if (window.location.pathname === '/') {
         return app.site.set({
@@ -630,13 +657,14 @@ window.require.register("helpers", function(exports, require, module) {
   };
 
   exports.search = function(query, callback) {
-    return $.getJSON('/search/' + query, function(data) {
+    return $.getJSON('/search/' + query + "&ajax=true", function(data) {
       return callback(data);
     });
   };
 
   $(function() {
     var reportNearBottom, throttled;
+
     reportNearBottom = function() {
       return app.eventBus.trigger('distance:bottom_page', ($(document).height() - $(window).height()) - $(window).scrollTop());
     };
@@ -658,7 +686,7 @@ window.require.register("helpers", function(exports, require, module) {
   
 });
 window.require.register("initialize", function(exports, require, module) {
-  var BrunchApplication, Drafts, DraftsIndicatorView, MainRouter, MainView, Posts, PostsCache, PostsView, Search, clickHandler, loadPostModel, scrollPosition, search, throbber, _ref,
+  var BrunchApplication, Drafts, DraftsIndicatorView, MainRouter, MainView, Posts, PostsCache, PostsView, Search, clickHandler, loadPostModel, scrollPosition, search, throbber, _ref, _ref1,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -684,18 +712,19 @@ window.require.register("initialize", function(exports, require, module) {
 
   require('file_drop_handler');
 
-  require('keyboard_shortcuts');
+  require('alert_on_appcache_updates');
 
   exports.Application = (function(_super) {
-
     __extends(Application, _super);
 
     function Application() {
-      return Application.__super__.constructor.apply(this, arguments);
+      _ref1 = Application.__super__.constructor.apply(this, arguments);
+      return _ref1;
     }
 
     Application.prototype.initialize = function() {
       var postsView;
+
       _.mixin(_.str.exports());
       this.collections = {};
       this.views = {};
@@ -741,22 +770,52 @@ window.require.register("initialize", function(exports, require, module) {
   if (location.pathname !== '/login') {
     window.app = new exports.Application;
   }
+
+  _.defer(function() {
+    return require('keyboard_shortcuts');
+  });
   
 });
 window.require.register("keyboard_shortcuts", function(exports, require, module) {
-  
   $(document).on('keydown', 'textarea, input', function(e) {
     if (e.which === 27) {
       return $(e.currentTarget).blur();
     }
   });
+
+  $(document).on('keydown', function(e) {
+    if ($(e.target).is('input, textarea, select')) {
+      return;
+    }
+    return app.eventBus.trigger('keydown', e.which);
+  });
+
+  app.eventBus.on('keydown', function(keycode) {
+    if (keycode === 71) {
+      return (function() {
+        var callback;
+
+        callback = function(keycode) {
+          if (keycode === 71) {
+            return $("html, body").animate({
+              scrollTop: 0
+            });
+          }
+        };
+        app.eventBus.on('keydown', callback);
+        return _.delay((function() {
+          return app.eventBus.off('keydown', callback);
+        }), 1000);
+      })();
+    }
+  });
   
 });
 window.require.register("mixins/region_manager", function(exports, require, module) {
-  
   exports.RegionManager = {
     show: function(view) {
       var oldView;
+
       this.$el.show();
       oldView = this.currentView;
       this.currentView = view;
@@ -779,16 +838,16 @@ window.require.register("mixins/region_manager", function(exports, require, modu
   
 });
 window.require.register("models/draft", function(exports, require, module) {
-  var Draft,
+  var Draft, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   module.exports = Draft = (function(_super) {
-
     __extends(Draft, _super);
 
     function Draft() {
-      return Draft.__super__.constructor.apply(this, arguments);
+      _ref = Draft.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     return Draft;
@@ -797,16 +856,16 @@ window.require.register("models/draft", function(exports, require, module) {
   
 });
 window.require.register("models/post", function(exports, require, module) {
-  var Post,
+  var Post, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   module.exports = Post = (function(_super) {
-
     __extends(Post, _super);
 
     function Post() {
-      return Post.__super__.constructor.apply(this, arguments);
+      _ref = Post.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     Post.prototype.defaults = {
@@ -835,6 +894,7 @@ window.require.register("models/post", function(exports, require, module) {
 
     Post.prototype.renderThings = function(breakCache) {
       var html, piece, pieces, readMore, _i, _len;
+
       if ((this.get('rendered_body') != null) && this.get('rendered_body') !== "" && !breakCache) {
         return;
       }
@@ -883,16 +943,16 @@ window.require.register("models/post", function(exports, require, module) {
   
 });
 window.require.register("models/result", function(exports, require, module) {
-  var Result,
+  var Result, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   module.exports = Result = (function(_super) {
-
     __extends(Result, _super);
 
     function Result() {
-      return Result.__super__.constructor.apply(this, arguments);
+      _ref = Result.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     return Result;
@@ -901,7 +961,7 @@ window.require.register("models/result", function(exports, require, module) {
   
 });
 window.require.register("routers/main_router", function(exports, require, module) {
-  var Draft, Post, PostEditView, PostView, PostsView, SearchView,
+  var Draft, Post, PostEditView, PostView, PostsView, SearchView, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -918,15 +978,16 @@ window.require.register("routers/main_router", function(exports, require, module
   SearchView = require('views/search_view');
 
   exports.MainRouter = (function(_super) {
-
     __extends(MainRouter, _super);
 
     function MainRouter() {
-      return MainRouter.__super__.constructor.apply(this, arguments);
+      _ref = MainRouter.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     MainRouter.prototype.initialize = function() {
       var _this = this;
+
       key('s,/', function() {
         return _this.search();
       });
@@ -956,6 +1017,7 @@ window.require.register("routers/main_router", function(exports, require, module
 
     MainRouter.prototype.post = function(id) {
       var post, postView;
+
       post = app.util.loadPostModel(id, true);
       document.body.scrollTop = document.documentElement.scrollTop = 0;
       postView = new PostView({
@@ -967,6 +1029,7 @@ window.require.register("routers/main_router", function(exports, require, module
 
     MainRouter.prototype.newPost = function(focusTitle) {
       var draftModel, newPost, postEditView;
+
       if (focusTitle == null) {
         focusTitle = false;
       }
@@ -990,6 +1053,7 @@ window.require.register("routers/main_router", function(exports, require, module
 
     MainRouter.prototype.editPost = function(id) {
       var post, postEditView;
+
       post = app.util.loadPostModel(id, true);
       document.body.scrollTop = document.documentElement.scrollTop = 0;
       postEditView = new PostEditView({
@@ -1000,6 +1064,7 @@ window.require.register("routers/main_router", function(exports, require, module
 
     MainRouter.prototype.editDraft = function(id) {
       var draftModel, newPost, postEditView;
+
       draftModel = app.collections.drafts.get(id);
       newPost = new Post;
       newPost.collection = app.collections.posts;
@@ -1018,19 +1083,20 @@ window.require.register("routers/main_router", function(exports, require, module
 
     MainRouter.prototype.search = function(query) {
       var searchView;
+
       if (query == null) {
         query = "";
-      }
-      query = decodeURIComponent(query);
-      if (query !== "") {
-        app.collections.search.query(query);
-      } else {
-        app.collections.search.clear();
       }
       searchView = new SearchView({
         collection: app.collections.search
       });
-      return app.views.main.show(searchView);
+      app.views.main.show(searchView);
+      query = decodeURIComponent(query);
+      if (!(query === "" || query === app.collections.search.query_str)) {
+        return app.collections.search.query(query);
+      } else {
+        return app.collections.search.clear();
+      }
     };
 
     return MainRouter;
@@ -1039,16 +1105,16 @@ window.require.register("routers/main_router", function(exports, require, module
   
 });
 window.require.register("views/drafts_indicator_view", function(exports, require, module) {
-  var DraftsIndicatorView,
+  var DraftsIndicatorView, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   module.exports = DraftsIndicatorView = (function(_super) {
-
     __extends(DraftsIndicatorView, _super);
 
     function DraftsIndicatorView() {
-      return DraftsIndicatorView.__super__.constructor.apply(this, arguments);
+      _ref = DraftsIndicatorView.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     DraftsIndicatorView.prototype.initialize = function() {
@@ -1075,12 +1141,13 @@ window.require.register("views/drafts_indicator_view", function(exports, require
     };
 
     DraftsIndicatorView.prototype.renderDrafts = function() {
-      var draft, _i, _len, _ref, _results;
+      var draft, _i, _len, _ref1, _results;
+
       this.$('ul.dropdown').empty();
-      _ref = this.collection.models;
+      _ref1 = this.collection.models;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        draft = _ref[_i];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        draft = _ref1[_i];
         _results.push(this.$('ul.dropdown').append("<li data-draft-id='" + (draft.get('id')) + "'>" + (draft.get('title')) + " <em>" + (moment(draft.get('created')).fromNow()) + "</em></li>"));
       }
       return _results;
@@ -1095,6 +1162,7 @@ window.require.register("views/drafts_indicator_view", function(exports, require
 
     DraftsIndicatorView.prototype.gotoDraftEditPage = function(e) {
       var draftId;
+
       draftId = $(e.target).closest('li').data('draft-id');
       return app.router.navigate('drafts/' + draftId, true);
     };
@@ -1105,18 +1173,18 @@ window.require.register("views/drafts_indicator_view", function(exports, require
   
 });
 window.require.register("views/main_view", function(exports, require, module) {
-  var RegionManager,
+  var RegionManager, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   RegionManager = require('mixins/region_manager').RegionManager;
 
   exports.MainView = (function(_super) {
-
     __extends(MainView, _super);
 
     function MainView() {
-      return MainView.__super__.constructor.apply(this, arguments);
+      _ref = MainView.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     return MainView;
@@ -1127,7 +1195,7 @@ window.require.register("views/main_view", function(exports, require, module) {
   
 });
 window.require.register("views/post_edit_view", function(exports, require, module) {
-  var ExpandingTextareaView, PostEditTemplate,
+  var ExpandingTextareaView, PostEditTemplate, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1137,16 +1205,13 @@ window.require.register("views/post_edit_view", function(exports, require, modul
   ExpandingTextareaView = require('widgets/expanding_textarea/expanding_textarea_view').ExpandingTextareaView;
 
   exports.PostEditView = (function(_super) {
-
     __extends(PostEditView, _super);
 
     function PostEditView() {
       this.draftSave = __bind(this.draftSave, this);
-
       this.modelSynced = __bind(this.modelSynced, this);
-
-      this._autoscroll = __bind(this._autoscroll, this);
-      return PostEditView.__super__.constructor.apply(this, arguments);
+      this._autoscroll = __bind(this._autoscroll, this);    _ref = PostEditView.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     PostEditView.prototype.id = 'post-edit';
@@ -1168,6 +1233,7 @@ window.require.register("views/post_edit_view", function(exports, require, modul
     PostEditView.prototype.render = function() {
       var lines,
         _this = this;
+
       if (((this.model.get('nid') != null) || (this.model.id != null)) && (this.model.get('body') === "" || this.model.get('title') === "")) {
         this.$el.html("<h2>Loading post... " + (app.templates.throbber('show', '21px')) + " </h2>");
       } else {
@@ -1205,10 +1271,14 @@ window.require.register("views/post_edit_view", function(exports, require, modul
     };
 
     PostEditView.prototype._autoscroll = function(e) {
-      var cursorMax, cursorPosition, distanceTextareaToTop, distanceToBottomFromTextarea, distanceToEnd, notInTitle, numCharactersTyped, textareaHeight;
-      distanceTextareaToTop = $('.body textarea').offset().top - $(document).scrollTop();
+      var cursorMax, cursorPosition, distanceTextareaToTop, distanceToBottomOfWindowFromTextarea, distanceToEnd, notInTitle, numCharactersTyped, textareaHeight;
+
+      if (Modernizr.touch) {
+        return;
+      }
+      distanceTextareaToTop = $('.body textarea').offset().top;
       textareaHeight = this.$('.body textarea').height();
-      distanceToBottomFromTextarea = $(window).height() - textareaHeight - distanceTextareaToTop;
+      distanceToBottomOfWindowFromTextarea = $(window).height() - textareaHeight - (distanceTextareaToTop - $(window).scrollTop());
       cursorPosition = this.$('.body textarea')[0].selectionStart;
       cursorMax = this.$('.body textarea')[0].value.length;
       distanceToEnd = cursorMax - cursorPosition;
@@ -1218,14 +1288,14 @@ window.require.register("views/post_edit_view", function(exports, require, modul
       } else {
         notInTitle = true;
       }
-      if ((-50 < distanceToBottomFromTextarea && distanceToBottomFromTextarea < 50) && distanceToEnd < 80 && numCharactersTyped > 400 && notInTitle) {
+      if ((-50 < distanceToBottomOfWindowFromTextarea && distanceToBottomOfWindowFromTextarea < 50) && distanceToEnd < 80 && numCharactersTyped > 400 && notInTitle) {
         $("html, body").animate({
           scrollTop: $(document).height() - $(window).height()
         });
       }
-      if (cursorPosition < 150 && $(window).scrollTop() > 50 && distanceTextareaToTop < 200) {
+      if (cursorPosition < 5 && $(window).scrollTop() > (distanceTextareaToTop - 150)) {
         return $("html, body").animate({
-          scrollTop: 0
+          scrollTop: Math.max(0, distanceTextareaToTop - 150)
         });
       }
     };
@@ -1236,6 +1306,7 @@ window.require.register("views/post_edit_view", function(exports, require, modul
 
     PostEditView.prototype.save = function() {
       var created, diff, newDate, obj, oldDate, pos;
+
       obj = {};
       obj.title = _.str.trim(this.$('.title textarea').val());
       obj.body = _.str.trim(this.$('.body textarea').val());
@@ -1265,6 +1336,7 @@ window.require.register("views/post_edit_view", function(exports, require, modul
 
     PostEditView.prototype.modelSynced = function(model, response, options) {
       var newPost;
+
       if (this.options.draftModel != null) {
         this.options.draftModel.destroy();
         newPost = true;
@@ -1284,6 +1356,7 @@ window.require.register("views/post_edit_view", function(exports, require, modul
 
     PostEditView.prototype["delete"] = function() {
       var _this = this;
+
       app.collections.posts.remove(this.model);
       app.collections.posts.sort();
       app.collections.posts.trigger('reset');
@@ -1323,6 +1396,7 @@ window.require.register("views/post_edit_view", function(exports, require, modul
     PostEditView.prototype.draftSave = function(e) {
       var obj,
         _this = this;
+
       if (this.options.draftModel != null) {
         obj = {};
         obj.title = this.$('.title textarea').val();
@@ -1348,7 +1422,7 @@ window.require.register("views/post_edit_view", function(exports, require, modul
   
 });
 window.require.register("views/post_view", function(exports, require, module) {
-  var PostTemplate,
+  var PostTemplate, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1356,12 +1430,11 @@ window.require.register("views/post_view", function(exports, require, module) {
   PostTemplate = require('views/templates/post');
 
   exports.PostView = (function(_super) {
-
     __extends(PostView, _super);
 
     function PostView() {
-      this.render = __bind(this.render, this);
-      return PostView.__super__.constructor.apply(this, arguments);
+      this.render = __bind(this.render, this);    _ref = PostView.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     PostView.prototype.className = 'post';
@@ -1378,6 +1451,7 @@ window.require.register("views/post_view", function(exports, require, module) {
 
     PostView.prototype.render = function() {
       var data;
+
       if (this.model.get('body') !== "" && this.model.get('title') !== "") {
         this.model.renderThings(true);
         data = this.model.toJSON();
@@ -1397,6 +1471,7 @@ window.require.register("views/post_view", function(exports, require, module) {
       });
       this.$("img").each(function() {
         var el;
+
         el = $(this);
         if (_.str.include(el.attr('src'), 'attachments')) {
           return $(this).wrap("<a target='_blank' href='" + (el.attr('src') + "/original") + "' />");
@@ -1415,7 +1490,7 @@ window.require.register("views/post_view", function(exports, require, module) {
   
 });
 window.require.register("views/posts_view", function(exports, require, module) {
-  var PostView, PostsTemplate,
+  var PostView, PostsTemplate, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1425,23 +1500,22 @@ window.require.register("views/posts_view", function(exports, require, module) {
   PostsTemplate = require('views/templates/posts');
 
   exports.PostsView = (function(_super) {
-
     __extends(PostsView, _super);
 
     function PostsView() {
       this.addOne = __bind(this.addOne, this);
-
-      this.render = __bind(this.render, this);
-      return PostsView.__super__.constructor.apply(this, arguments);
+      this.render = __bind(this.render, this);    _ref = PostsView.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     PostsView.prototype.id = 'posts';
 
     PostsView.prototype.initialize = function() {
       var _this = this;
+
       this.debouncedCachePostPositions = _.debounce((function() {
         return _this.cachePostPositions();
-      }), 100);
+      }), 500);
       this.listenTo(this.collection, 'reset add remove', this.debouncedCachePostPositions);
       this.listenTo(this.collection, 'reset', this.render);
       this.listenTo(this.collection, 'add', this.addOne);
@@ -1471,6 +1545,7 @@ window.require.register("views/posts_view", function(exports, require, module) {
 
     PostsView.prototype.render = function() {
       var _this = this;
+
       this.$el.html(PostsTemplate());
       if (this.collection.isLoading) {
         this.showLoading();
@@ -1487,6 +1562,7 @@ window.require.register("views/posts_view", function(exports, require, module) {
 
     PostsView.prototype.scrollLastPostion = function() {
       var scrollPosition;
+
       scrollPosition = app.site.get('postsScroll');
       return $(window).scrollTop(scrollPosition);
     };
@@ -1502,11 +1578,12 @@ window.require.register("views/posts_view", function(exports, require, module) {
     };
 
     PostsView.prototype.addAll = function() {
-      var post, _i, _len, _ref, _results;
-      _ref = this.collection.models;
+      var post, _i, _len, _ref1, _results;
+
+      _ref1 = this.collection.models;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        post = _ref[_i];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        post = _ref1[_i];
         _results.push(this.addOne(post));
       }
       return _results;
@@ -1514,6 +1591,7 @@ window.require.register("views/posts_view", function(exports, require, module) {
 
     PostsView.prototype.addOne = function(post) {
       var postView;
+
       postView = new PostView({
         model: post
       });
@@ -1526,12 +1604,13 @@ window.require.register("views/posts_view", function(exports, require, module) {
     };
 
     PostsView.prototype.cachePostPositions = function() {
-      var post, _i, _len, _ref, _results;
+      var post, _i, _len, _ref1, _results;
+
       this.postPositions = [];
-      _ref = this.$('.post');
+      _ref1 = this.$('.post');
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        post = _ref[_i];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        post = _ref1[_i];
         _results.push(this.postPositions.push($(post).offset().top));
       }
       return _results;
@@ -1539,6 +1618,7 @@ window.require.register("views/posts_view", function(exports, require, module) {
 
     PostsView.prototype.scrollNext = function() {
       var curPosition, nextY;
+
       curPosition = $(window).scrollTop() + 81;
       nextY = _.find(this.postPositions, function(y) {
         return curPosition < y;
@@ -1548,6 +1628,7 @@ window.require.register("views/posts_view", function(exports, require, module) {
 
     PostsView.prototype.scrollPrevious = function() {
       var copyPostPostions, curPosition, nextY;
+
       curPosition = $(window).scrollTop() + 79;
       copyPostPostions = this.postPositions.slice(0).reverse();
       nextY = _.find(copyPostPostions, function(y) {
@@ -1562,31 +1643,32 @@ window.require.register("views/posts_view", function(exports, require, module) {
   
 });
 window.require.register("views/result_view", function(exports, require, module) {
-  var ResultTemplate, ResultView,
+  var ResultTemplate, ResultView, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   ResultTemplate = require('views/templates/result');
 
   module.exports = ResultView = (function(_super) {
-
     __extends(ResultView, _super);
 
     function ResultView() {
-      return ResultView.__super__.constructor.apply(this, arguments);
+      _ref = ResultView.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     ResultView.prototype.className = 'search-result';
 
     ResultView.prototype.render = function() {
-      var body, title, _ref, _ref1, _ref2, _ref3;
-      if (((_ref = this.model.get('highlight').title) != null ? _ref[0] : void 0) != null) {
-        title = (_ref1 = this.model.get('highlight').title) != null ? _ref1[0] : void 0;
+      var body, title, _ref1, _ref2, _ref3, _ref4;
+
+      if (((_ref1 = this.model.get('highlight').title) != null ? _ref1[0] : void 0) != null) {
+        title = (_ref2 = this.model.get('highlight').title) != null ? _ref2[0] : void 0;
       } else {
         title = this.model.get('_source').title;
       }
-      if (((_ref2 = this.model.get('highlight').body) != null ? _ref2[0] : void 0) != null) {
-        body = (_ref3 = this.model.get('highlight').body) != null ? _ref3[0] : void 0;
+      if (((_ref3 = this.model.get('highlight').body) != null ? _ref3[0] : void 0) != null) {
+        body = (_ref4 = this.model.get('highlight').body) != null ? _ref4[0] : void 0;
       } else {
         body = _.prune(this.model.get('_source').body, 200);
       }
@@ -1605,7 +1687,7 @@ window.require.register("views/result_view", function(exports, require, module) 
   
 });
 window.require.register("views/search_view", function(exports, require, module) {
-  var ResultView, SearchTemplate, SearchView,
+  var ResultView, SearchTemplate, SearchView, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1614,17 +1696,19 @@ window.require.register("views/search_view", function(exports, require, module) 
   ResultView = require('views/result_view');
 
   module.exports = SearchView = (function(_super) {
-
     __extends(SearchView, _super);
 
     function SearchView() {
-      return SearchView.__super__.constructor.apply(this, arguments);
+      _ref = SearchView.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     SearchView.prototype.id = 'search-page';
 
     SearchView.prototype.initialize = function() {
-      return this.listenTo(this.collection, 'reset', this.renderResults);
+      this.listenTo(this.collection, 'reset', this.renderResults);
+      this.listenTo(this.collection, 'search:started', this.showThrobber);
+      return this.listenTo(this.collection, 'search:complete', this.hideThrobber);
     };
 
     SearchView.prototype.events = {
@@ -1634,17 +1718,19 @@ window.require.register("views/search_view", function(exports, require, module) 
 
     SearchView.prototype.render = function() {
       var _this = this;
+
       this.$el.html(SearchTemplate());
-      this.$('input').val(this.collection.query_str);
       this.renderResults();
       _.defer(function() {
+        _this.$('input').val(_this.collection.query_str);
         return _this.$('input').focus();
       });
       return this;
     };
 
     SearchView.prototype.renderResults = function() {
-      var result, resultView, _i, _len, _ref;
+      var result, resultView, _i, _len, _ref1;
+
       this.$('#search-results').empty();
       if ((this.collection.total != null) && (this.collection.searchtime != null)) {
         this.$('.search-meta').html("" + this.collection.total + " results (" + (this.collection.searchtime / 1000) + " seconds)");
@@ -1653,9 +1739,9 @@ window.require.register("views/search_view", function(exports, require, module) 
       }
       if (this.collection.length) {
         this.$('.js-loading').hide();
-        _ref = this.collection.models;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          result = _ref[_i];
+        _ref1 = this.collection.models;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          result = _ref1[_i];
           this.addChildView = resultView = new ResultView({
             model: result
           });
@@ -1670,12 +1756,20 @@ window.require.register("views/search_view", function(exports, require, module) 
 
     SearchView.prototype.search = function() {
       var query;
+
       query = this.$('input').val();
       if (query !== "") {
-        this.$('.js-loading').css('display', 'inline-block');
         this.collection.query(query);
         return app.router.navigate('/search/' + encodeURIComponent(query));
       }
+    };
+
+    SearchView.prototype.showThrobber = function() {
+      return this.$('.js-loading').css('display', 'inline-block');
+    };
+
+    SearchView.prototype.hideThrobber = function() {
+      return this.$('.js-loading').hide();
     };
 
     SearchView.prototype.searchByEnter = function(e) {
@@ -1729,7 +1823,6 @@ window.require.register("views/templates/edit_post", function(exports, require, 
     }
     (function() {
       (function() {
-      
         if (this.nid == null) {
           __out.push('\n  <h3>Create new post <span id="last-saved"></span></h3>\n');
         }
@@ -1803,7 +1896,6 @@ window.require.register("views/templates/post", function(exports, require, modul
     }
     (function() {
       (function() {
-      
         if (this.page) {
           __out.push('\n  <a class="button post-action" href="node/');
           __out.push(__sanitize(this.nid));
@@ -1889,7 +1981,6 @@ window.require.register("views/templates/posts", function(exports, require, modu
     }
     (function() {
       (function() {
-      
         __out.push(app.templates.throbber('js-top-loading global-loading', '24px'));
       
         __out.push('\n<a class="button post-action" href="/posts/new">New post</a>\n<div class="posts"></div>\n<div id="loading-posts">\n  <em>Loading posts...</em> ');
@@ -1945,7 +2036,6 @@ window.require.register("views/templates/result", function(exports, require, mod
     }
     (function() {
       (function() {
-      
         __out.push('<h3><a href="');
       
         __out.push(this.link);
@@ -2011,7 +2101,6 @@ window.require.register("views/templates/search", function(exports, require, mod
     }
     (function() {
       (function() {
-      
         __out.push('<h1>Search</h1>\n<input type=\'text\'><button>Search</button>\n');
       
         __out.push(app.templates.throbber('button-throbber js-loading', '24px'));
@@ -2176,7 +2265,6 @@ window.require.register("widgets/expanding_textarea/expanding_textarea", functio
     }
     (function() {
       (function() {
-      
         __out.push('<textarea class="input" placeholder="');
       
         __out.push(this.placeholder);
@@ -2195,7 +2283,7 @@ window.require.register("widgets/expanding_textarea/expanding_textarea", functio
   }
 });
 window.require.register("widgets/expanding_textarea/expanding_textarea_view", function(exports, require, module) {
-  var $, expandingTextarea,
+  var $, expandingTextarea, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -2205,23 +2293,22 @@ window.require.register("widgets/expanding_textarea/expanding_textarea_view", fu
   expandingTextarea = require('widgets/expanding_textarea/expanding_textarea');
 
   exports.ExpandingTextareaView = (function(_super) {
-
     __extends(ExpandingTextareaView, _super);
 
     function ExpandingTextareaView() {
       this.makeAreaExpandable = __bind(this.makeAreaExpandable, this);
-
-      this.render = __bind(this.render, this);
-      return ExpandingTextareaView.__super__.constructor.apply(this, arguments);
+      this.render = __bind(this.render, this);    _ref = ExpandingTextareaView.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     ExpandingTextareaView.prototype.render = function() {
-      var cloneCSSProperties, context, k, v, _ref,
+      var cloneCSSProperties, context, k, v, _ref1,
         _this = this;
+
       context = {};
-      _ref = this.options;
-      for (k in _ref) {
-        v = _ref[k];
+      _ref1 = this.options;
+      for (k in _ref1) {
+        v = _ref1[k];
         context[k] = v;
       }
       this.$el.html(expandingTextarea(context));
@@ -2229,10 +2316,12 @@ window.require.register("widgets/expanding_textarea/expanding_textarea_view", fu
       cloneCSSProperties = ['lineHeight', 'textDecoration', 'letterSpacing', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'textTransform', 'textAlign', 'direction', 'wordSpacing', 'fontSizeAdjust', 'wordWrap', 'borderLeftWidth', 'borderRightWidth', 'borderTopWidth', 'borderBottomWidth', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'boxSizing', 'webkitBoxSizing', 'mozBoxSizing', 'msBoxSizing'];
       _.defer(function() {
         var pre, textarea;
+
         textarea = _this.$('textarea');
         pre = _this.$('pre');
         return $.each(cloneCSSProperties, function(i, p) {
           var val;
+
           val = textarea.css(p);
           if (pre.css(p) !== val) {
             return pre.css(p, val);
@@ -2244,10 +2333,12 @@ window.require.register("widgets/expanding_textarea/expanding_textarea_view", fu
 
     ExpandingTextareaView.prototype.makeAreaExpandable = function(lines) {
       var _this = this;
+
       this.$('textarea').expandingTextarea();
       return _.defer(function() {
         var fontSize, height, paddingBottom, paddingTop;
-        if (!(lines != null)) {
+
+        if (lines == null) {
           lines = 1;
         }
         fontSize = parseInt(_this.$('textarea').css('font-size').slice(0, -2), 10);
