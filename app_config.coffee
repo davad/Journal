@@ -8,4 +8,5 @@ config.elasticSearchHost = process.env.ELASTICSEARCH_URL ? 'http://localhost'
 config.elasticSearchHost = url.parse(config.elasticSearchHost)
 config.elasticSearchHost.index = process.env.ELASTICSEARCH_INDEX ? 'journal_posts'
 
+
 module.exports = config
