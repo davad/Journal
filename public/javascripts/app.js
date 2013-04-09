@@ -314,7 +314,7 @@ window.require.register("collections/posts", function(exports, require, module) 
       maxNew = _.max(response, function(post) {
         return moment(post.created).unix();
       });
-      if ((this.maxNew != null) && (maxNew != null) && this.maxNew.get('created') < maxNew.created) {
+      if ((this.maxNew != null) && _.isObject(this.maxNew) && (maxNew != null) && this.maxNew.get('created') < maxNew.created) {
         this.maxNew = this.first();
         return _.defer(function() {
           return _this.trigger('reset');
@@ -444,11 +444,11 @@ window.require.register("collections/search", function(exports, require, module)
       var start,
         _this = this;
 
-      this.trigger('search:started');
-      this.query_str = query;
-      start = new Date();
-      this.reset();
       if (query !== "") {
+        this.trigger('search:started');
+        this.query_str = query;
+        start = new Date();
+        this.reset();
         return app.util.search(query, function(results) {
           var entry, year, _i, _len, _ref1;
 
@@ -464,15 +464,17 @@ window.require.register("collections/search", function(exports, require, module)
           }
           return _this.trigger('search:complete');
         });
+      } else {
+        return this.clear();
       }
     };
 
     Search.prototype.clear = function() {
-      this.reset();
       this.searchtime = null;
       this.max_score = null;
       this.total = null;
-      return this.query_str = null;
+      this.query_str = null;
+      return this.reset();
     };
 
     return Search;
@@ -905,7 +907,7 @@ window.require.register("models/post", function(exports, require, module) {
         silent: true
       });
       this.set({
-        rendered_created: moment.utc(this.get('created')).format("dddd, MMMM Do YYYY")
+        rendered_created: moment.utc(this.get('created')).local().format("dddd, MMMM Do YYYY h:mma")
       }, {
         silent: true
       });
@@ -1092,10 +1094,8 @@ window.require.register("routers/main_router", function(exports, require, module
       });
       app.views.main.show(searchView);
       query = decodeURIComponent(query);
-      if (!(query === "" || query === app.collections.search.query_str)) {
+      if (query !== app.collections.search.query_str) {
         return app.collections.search.query(query);
-      } else {
-        return app.collections.search.clear();
       }
     };
 
@@ -1659,6 +1659,10 @@ window.require.register("views/result_view", function(exports, require, module) 
 
     ResultView.prototype.className = 'search-result';
 
+    ResultView.prototype.events = {
+      'click .js-link': 'navigate'
+    };
+
     ResultView.prototype.render = function() {
       var body, title, _ref1, _ref2, _ref3, _ref4;
 
@@ -1675,10 +1679,16 @@ window.require.register("views/result_view", function(exports, require, module) 
       this.$el.html(ResultTemplate({
         title: title,
         body: body,
-        created: moment(this.model.get('_source').created).format("D MMMM YYYY"),
-        link: '/node/' + this.model.get('_source').nid
+        created: moment(this.model.get('_source').created).format("D MMMM YYYY")
       }));
       return this;
+    };
+
+    ResultView.prototype.navigate = function() {
+      var link;
+
+      link = '/node/' + this.model.get('_source').nid;
+      return app.router.navigate(link, true);
     };
 
     return ResultView;
@@ -2036,15 +2046,11 @@ window.require.register("views/templates/result", function(exports, require, mod
     }
     (function() {
       (function() {
-        __out.push('<h3><a href="');
-      
-        __out.push(this.link);
-      
-        __out.push('">');
+        __out.push('<h3><span class="js-link link">');
       
         __out.push(this.title);
       
-        __out.push('</a> <span class="created">– ');
+        __out.push('</span> <span class="created">– ');
       
         __out.push(this.created);
       
