@@ -22,9 +22,9 @@ PostSchema = new Schema (
 )
 PostSchema.plugin(mongoosastic, {index: config.elasticSearchHost.index, host: config.elasticSearchHost.host})
 Post = mongoose.model 'post', PostSchema
-Post.createMapping (err, mapping) ->
-  console.log err
-  console.log mapping
+#Post.createMapping (err, mapping) ->
+#  console.log err
+# console.log mapping
 
 DraftSchema = new Schema (
   title: { type: String }
