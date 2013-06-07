@@ -1,0 +1,1726 @@
+@charset "UTF-8";
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+/* line 47, ../../app/styles/sass/base/_base.scss */
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 50, ../../app/styles/sass/base/_base.scss */
+.kalendae * {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+/* line 2, ../../app/styles/sass/base/_blueprint.scss */
+body {
+  color: #222;
+  background: #fff;
+}
+
+/* line 7, ../../app/styles/sass/base/_blueprint.scss */
+a:focus,
+a:hover {
+  color: #09f;
+}
+
+/* line 8, ../../app/styles/sass/base/_blueprint.scss */
+a {
+  color: #06c;
+  text-decoration: underline;
+}
+
+/* line 10, ../../app/styles/sass/base/_blueprint.scss */
+blockquote {
+  margin: 1.5em;
+  color: #666;
+  font-style: italic;
+}
+
+/* line 11, ../../app/styles/sass/base/_blueprint.scss */
+strong, dfn {
+  font-weight: bold;
+}
+
+/* line 12, ../../app/styles/sass/base/_blueprint.scss */
+em, dfnn {
+  font-style: italic;
+}
+
+/* line 13, ../../app/styles/sass/base/_blueprint.scss */
+sup, sub {
+  line-height: 0;
+}
+
+/* line 16, ../../app/styles/sass/base/_blueprint.scss */
+abbr,
+acronym {
+  border-bottom: 1px dotted #666;
+}
+
+/* line 17, ../../app/styles/sass/base/_blueprint.scss */
+address {
+  margin: 0 0 1.5em;
+  font-style: italic;
+}
+
+/* line 19, ../../app/styles/sass/base/_blueprint.scss */
+pre {
+  margin: 1.5em 0;
+  white-space: pre;
+}
+
+/* line 20, ../../app/styles/sass/base/_blueprint.scss */
+pre, code, tt {
+  font: 1em 'andale mono', 'lucida console', monospace;
+  line-height: 1.5;
+}
+
+/* Lists
+-------------------------------------------------------------- */
+/* line 26, ../../app/styles/sass/base/_blueprint.scss */
+li ul,
+li ol {
+  margin: 0;
+}
+
+/* line 27, ../../app/styles/sass/base/_blueprint.scss */
+ul, ol {
+  margin: 0 1.5em 1.5em 0;
+  padding-left: 1.5em;
+}
+
+/* line 29, ../../app/styles/sass/base/_blueprint.scss */
+ul {
+  list-style-type: disc;
+}
+
+/* line 30, ../../app/styles/sass/base/_blueprint.scss */
+ol {
+  list-style-type: decimal;
+}
+
+/* line 32, ../../app/styles/sass/base/_blueprint.scss */
+dl {
+  margin: 0 0 1.5em 0;
+}
+
+/* line 33, ../../app/styles/sass/base/_blueprint.scss */
+dl dt {
+  font-weight: bold;
+}
+
+/* line 34, ../../app/styles/sass/base/_blueprint.scss */
+dd {
+  margin-left: 1.5em;
+}
+
+/* Tables
+-------------------------------------------------------------- */
+/*
+Because of the need for padding only TH and TD, the vertical rhythm
+on table cells has to be 27px, instead of the standard 18px or 36px
+of other elements.
+ */
+/* line 45, ../../app/styles/sass/base/_blueprint.scss */
+table {
+  margin-bottom: 1.4em;
+  width: 100%;
+}
+
+/* line 46, ../../app/styles/sass/base/_blueprint.scss */
+th {
+  font-weight: bold;
+}
+
+/* line 47, ../../app/styles/sass/base/_blueprint.scss */
+thead th {
+  background: #c3d9ff;
+}
+
+/* line 48, ../../app/styles/sass/base/_blueprint.scss */
+th, td, caption {
+  padding: 4px 10px 4px 5px;
+}
+
+/*
+You can zebra-stripe your tables in outdated browsers by adding
+the class "even" to every other table row.
+ */
+/* line 54, ../../app/styles/sass/base/_blueprint.scss */
+tbody tr:nth-child(even) td,
+tbody tr.even td {
+  background: #e5ecf9;
+}
+
+/* line 57, ../../app/styles/sass/base/_blueprint.scss */
+tfoot {
+  font-style: italic;
+}
+
+/* line 57, ../../app/styles/sass/base/_blueprint.scss */
+italiccaption {
+  background: #eee;
+}
+
+/* normalize.css v1.1.0 | MIT License | git.io/normalize */
+/* normalize.css v1.1.0 | HTML5 Display Definitions | MIT License | git.io/normalize */
+/* line 20, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_html5.scss */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+  display: block;
+}
+
+/* line 28, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_html5.scss */
+audio,
+canvas,
+video {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+
+/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_html5.scss */
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+/* line 46, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_html5.scss */
+[hidden] {
+  display: none;
+}
+
+/* normalize.css v1.1.0 | Base | MIT License | git.io/normalize */
+/* line 13, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_base.scss */
+html {
+  font-size: 100%;
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+/* line 30, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_base.scss */
+html,
+button,
+input,
+select,
+textarea {
+  font-family: sans-serif;
+}
+
+/* line 37, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_base.scss */
+body {
+  margin: 0;
+}
+
+/* normalize.css v1.1.0 | Links | MIT License | git.io/normalize */
+/* line 9, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_links.scss */
+a:focus {
+  outline: thin dotted;
+}
+
+/* line 16, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_links.scss */
+a:active,
+a:hover {
+  outline: 0;
+}
+
+/* normalize.css v1.1.0 | Typography | MIT License | git.io/normalize */
+/* line 13, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+/* line 19, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+h2 {
+  font-size: 1.5em;
+  margin: 0.83em 0;
+}
+
+/* line 24, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+h3 {
+  font-size: 1.17em;
+  margin: 1em 0;
+}
+
+/* line 29, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+h4 {
+  font-size: 1em;
+  margin: 1.33em 0;
+}
+
+/* line 34, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+h5 {
+  font-size: 0.83em;
+  margin: 1.67em 0;
+}
+
+/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+h6 {
+  font-size: 0.67em;
+  margin: 2.33em 0;
+}
+
+/* line 47, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+
+/* line 54, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+b,
+strong {
+  font-weight: bold;
+}
+
+/* line 59, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+blockquote {
+  margin: 1em 40px;
+}
+
+/* line 66, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+dfn {
+  font-style: italic;
+}
+
+/* line 73, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+
+/* line 81, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+mark {
+  background: #ff0;
+  color: #000;
+}
+
+/* line 90, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+p,
+pre {
+  margin: 1em 0;
+}
+
+/* line 100, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, serif;
+  _font-family: 'courier new', monospace;
+  font-size: 1em;
+}
+
+/* line 110, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+pre {
+  white-space: pre;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* line 118, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+q {
+  quotes: "\201C" "\201D" "\2018" "\2019";
+}
+
+/* line 127, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+q {
+  quotes: none;
+}
+
+/* line 132, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+
+/* line 140, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+small {
+  font-size: 80%;
+}
+
+/* line 147, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+/* line 154, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+sup {
+  top: -0.5em;
+}
+
+/* line 158, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_typography.scss */
+sub {
+  bottom: -0.25em;
+}
+
+/* line 11, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_lists.scss */
+dl,
+menu,
+ol,
+ul {
+  margin: 1em 0;
+}
+
+/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_lists.scss */
+dd {
+  margin: 0 0 0 40px;
+}
+
+/* line 23, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_lists.scss */
+menu,
+ol,
+ul {
+  padding: 0 0 0 40px;
+}
+
+/* line 30, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_lists.scss */
+nav ul,
+nav ol {
+  list-style: none;
+  list-style-image: none;
+}
+
+/* normalize.css v1.1.0 | Embedded Content | MIT License | git.io/normalize */
+/* line 9, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_embeds.scss */
+img {
+  border: 0;
+  -ms-interpolation-mode: bicubic;
+}
+
+/* line 18, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_embeds.scss */
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/* normalize.css v1.1.0 | Figures | MIT License | git.io/normalize */
+/* line 9, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_figures.scss */
+figure {
+  margin: 0;
+}
+
+/* normalize.css v1.1.0 | Forms | MIT License | git.io/normalize */
+/* line 10, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+form {
+  margin: 0;
+}
+
+/* line 17, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+
+/* line 30, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+legend {
+  border: 0;
+  padding: 0;
+  white-space: normal;
+  *margin-left: -7px;
+}
+
+/* line 49, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  margin: 0;
+  vertical-align: baseline;
+  *vertical-align: middle;
+}
+
+/* line 63, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+button,
+input {
+  line-height: normal;
+}
+
+/* line 73, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+button,
+select {
+  text-transform: none;
+}
+
+/* line 90, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  cursor: pointer;
+  *overflow: visible;
+}
+
+/* line 101, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+
+/* line 113, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box;
+  padding: 0;
+  *height: 13px;
+  *width: 13px;
+}
+
+/* line 126, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+input[type="search"] {
+  -webkit-appearance: textfield;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+/* line 137, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/* line 144, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* line 152, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_forms.scss */
+textarea {
+  overflow: auto;
+  vertical-align: top;
+}
+
+/* normalize.css v1.1.0 | Tables | MIT License | git.io/normalize */
+/* line 9, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-normalize-1.4.3/stylesheets/normalize/_tables.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 105, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-0.13.alpha.4/frameworks/compass/stylesheets/compass/typography/_vertical_rhythm.scss */
+html {
+  font-size: 87.5%;
+  line-height: 1.5em;
+}
+
+/* line 9, ../../app/styles/sass/base/_typography.scss */
+#post-edit .title, #post-edit .title .expandingText textarea {
+  font-family: 'Open Sans', “Helvetica Neue”, Arial, Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+/* line 14, ../../app/styles/sass/base/_typography.scss */
+html.no-touch * {
+  text-rendering: optimizeLegibility;
+}
+
+/* line 18, ../../app/styles/sass/base/_typography.scss */
+body {
+  color: #1a1a1a;
+  font-family: 'Open Sans', “Helvetica Neue”, Arial, Helvetica, sans-serif;
+}
+
+/* line 27, ../../app/styles/sass/base/_typography.scss */
+p, pre, blockquote {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+/* line 32, ../../app/styles/sass/base/_typography.scss */
+p, #post-edit .expanding-textarea textarea, ul, ol, li, pre {
+  color: #4d4d4d;
+  font-family: Georgia, Times, “Times New Roman”, serif;
+}
+
+/* line 37, ../../app/styles/sass/base/_typography.scss */
+a {
+  text-decoration: none;
+  font-weight: bold;
+}
+/* line 4, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-0.13.alpha.4/frameworks/compass/stylesheets/compass/typography/links/_hover-link.scss */
+a:hover {
+  text-decoration: underline;
+}
+
+/* line 43, ../../app/styles/sass/base/_typography.scss */
+.link {
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+/* line 4, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-0.13.alpha.4/frameworks/compass/stylesheets/compass/typography/links/_hover-link.scss */
+.link:hover {
+  text-decoration: underline;
+}
+
+/* line 50, ../../app/styles/sass/base/_typography.scss */
+.link-color {
+  color: #0066cc;
+}
+/* line 53, ../../app/styles/sass/base/_typography.scss */
+.link-color:hover, .link-color:focus {
+  color: #09f;
+}
+
+/* line 58, ../../app/styles/sass/base/_typography.scss */
+h1, h2, h3, h4, h5 {
+  font-weight: 800;
+}
+/* line 61, ../../app/styles/sass/base/_typography.scss */
+h1 a, h2 a, h3 a, h4 a, h5 a {
+  color: #1a1a1a;
+}
+/* line 63, ../../app/styles/sass/base/_typography.scss */
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
+  color: #1a1a1a;
+}
+
+/* line 69, ../../app/styles/sass/base/_typography.scss */
+small {
+  font-size: 0.78571em;
+  line-height: 1.90909em;
+}
+
+/* line 79, ../../app/styles/sass/base/_typography.scss */
+h1 {
+  font-size: 2.57143em;
+  line-height: 1.16667em;
+  margin-top: 1.16667em;
+  margin-bottom: 1.16667em;
+}
+
+/* line 84, ../../app/styles/sass/base/_typography.scss */
+h2 {
+  font-size: 1.71429em;
+  line-height: 1.75em;
+  margin-top: 0.875em;
+  margin-bottom: 0.875em;
+}
+
+/* line 89, ../../app/styles/sass/base/_typography.scss */
+h3 {
+  font-size: 1.5em;
+  line-height: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/* line 94, ../../app/styles/sass/base/_typography.scss */
+h4 {
+  font-size: 1.28571em;
+  line-height: 1.16667em;
+  margin-top: 1.16667em;
+  margin-bottom: 1.16667em;
+}
+
+/* line 99, ../../app/styles/sass/base/_typography.scss */
+h5 {
+  font-size: 1.14286em;
+  line-height: 1.3125em;
+  margin-top: 1.3125em;
+  margin-bottom: 1.3125em;
+}
+
+/* line 104, ../../app/styles/sass/base/_typography.scss */
+h6 {
+  font-size: 1em;
+  line-height: 1.5em;
+}
+
+/* line 108, ../../app/styles/sass/base/_typography.scss */
+dl, ul, ol {
+  margin: 1.5em 0;
+  padding: 0 0 0 1.5em;
+}
+
+/* line 114, ../../app/styles/sass/base/_typography.scss */
+::-webkit-input-placeholder {
+  color: #4d4d4d;
+}
+
+/* line 117, ../../app/styles/sass/base/_typography.scss */
+:-moz-placeholder {
+  color: #4d4d4d;
+}
+
+/* line 120, ../../app/styles/sass/base/_typography.scss */
+:-ms-input-placeholder {
+  color: #4d4d4d;
+}
+
+/* line 124, ../../app/styles/sass/base/_typography.scss */
+hr {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  background: #e6e6e6;
+  border: none;
+  clear: both;
+  float: none;
+  height: 1px;
+  width: 100%;
+}
+
+/* line 14, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/susy-1.0.8/sass/susy/_grid.scss */
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 14, ../../app/styles/sass/base/_layout.scss */
+#wrapper, #menu-wrapper {
+  *zoom: 1;
+  max-width: 36em;
+  _width: 36em;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* line 38, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-0.13.alpha.4/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+#wrapper:after, #menu-wrapper:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/** Base container **/
+/* line 2, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae {
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+  background: #eee;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-size: 11px;
+  font-family: 'Helvetica Neue', 'Helvetica';
+  cursor: default;
+  position: relative;
+}
+
+/** Popup Container for Kalendae.Input **/
+/* line 17, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.k-floating {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100000;
+  margin: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+}
+
+/** Kalendae.Input's popup close button **/
+/* line 29, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-close {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: 2px solid #ccc;
+  color: #999;
+  line-height: 17px;
+  text-align: center;
+  font-size: 13px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+  cursor: pointer;
+}
+
+/* line 45, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-close:after {
+  content: "\2716";
+}
+
+/* line 46, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-close:hover {
+  color: #7EA0E2;
+  background: white;
+  border-color: #7EA0E2;
+}
+
+/** Month Container **/
+/* line 53, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-calendar {
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+  width: 155px;
+  vertical-align: top;
+}
+
+/** Month Separator **/
+/* line 56, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-separator {
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+  width: 2px;
+  vertical-align: top;
+  background: #ddd;
+  height: 155px;
+  margin: 0px 10px;
+}
+
+/** Month Title Row **/
+/* line 59, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-title {
+  text-align: center;
+  white-space: nowrap;
+  position: relative;
+  height: 18px;
+}
+
+/* line 60, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-caption {
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/** Month and Year Buttons **/
+/* line 67, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-previous-month,
+.kalendae .k-btn-next-month,
+.kalendae .k-btn-previous-year,
+.kalendae .k-btn-next-year {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  position: absolute;
+  top: -3px;
+  color: #777;
+  font-size: 26px;
+  line-height: 18px;
+  font-weight: bold;
+  font-family: arial;
+}
+
+/* line 69, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-previous-year {
+  left: 0;
+}
+
+/* line 70, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-previous-month {
+  left: 16px;
+}
+
+/* line 71, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-next-month {
+  right: 16px;
+}
+
+/* line 72, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-next-year {
+  right: 0;
+}
+
+/* line 74, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-previous-month:after {
+  content: "\2039";
+}
+
+/* line 75, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-next-month:after {
+  content: "\203A";
+}
+
+/* line 77, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-previous-year:after {
+  content: "\00AB";
+}
+
+/* line 78, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-next-year:after {
+  content: "\00BB";
+}
+
+/* line 81, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-previous-month:hover,
+.kalendae .k-btn-next-month:hover {
+  color: #7EA0E2;
+}
+
+/* line 84, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-btn-previous-year:hover,
+.kalendae .k-btn-next-year:hover {
+  color: #6FDF81;
+}
+
+/** Remove extra buttons when calendar shows multiple months **/
+/* line 94, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-first-month .k-btn-next-month,
+.kalendae .k-middle-month .k-btn-next-month,
+.kalendae .k-middle-month .k-btn-previous-month,
+.kalendae .k-last-month .k-btn-previous-month,
+.kalendae .k-first-month .k-btn-next-year,
+.kalendae .k-middle-month .k-btn-next-year,
+.kalendae .k-middle-month .k-btn-previous-year,
+.kalendae .k-last-month .k-btn-previous-year {
+  display: none;
+}
+
+/** Force specific width for month container contents **/
+/* line 99, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-title,
+.kalendae .k-header,
+.kalendae .k-days {
+  width: 154px;
+  display: block;
+  overflow: hidden;
+}
+
+/** Hide unusable buttons **/
+/* line 110, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.k-disable-next-month-btn .k-btn-next-month,
+.kalendae.k-disable-previous-month-btn .k-btn-previous-month,
+.kalendae.k-disable-next-year-btn .k-btn-next-year,
+.kalendae.k-disable-previous-year-btn .k-btn-previous-year {
+  display: none;
+}
+
+/** Week columns and day cells **/
+/* line 117, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-header span,
+.kalendae .k-days span {
+  float: left;
+  margin: 1px 1px;
+}
+
+/* line 122, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-header span {
+  text-align: center;
+  font-weight: bold;
+  width: 20px;
+  padding: 1px 0;
+  color: #666;
+}
+
+/* line 130, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-days span {
+  text-align: right;
+  width: 13px;
+  height: 1.1em;
+  line-height: 1em;
+  padding: 2px 3px 2px 2px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  color: #999;
+}
+
+/** Today **/
+/* line 144, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-today {
+  text-decoration: underline;
+}
+
+/** Selectable but not selected day  **/
+/* line 149, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-days span.k-active {
+  border-color: #ddd;
+  background-color: #fff;
+  cursor: pointer;
+  color: #333;
+}
+
+/** Selected day, when outside the selectable area **/
+/* line 157, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-days span.k-selected {
+  border-color: #1072A5;
+  color: #1072A5;
+}
+
+/** Selected day, when inside the selectable area **/
+/* line 163, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-days span.k-selected.k-active {
+  background: #7EA0E2;
+  color: white;
+}
+
+/** Days between the start and end points on a range, outside of the selectable area **/
+/* line 169, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-days span.k-range {
+  background: none;
+  border-color: #6DD4FE;
+}
+
+/** Days between the start and end points on a range, inside of the selectable area **/
+/* line 175, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-days span.k-range.k-active {
+  background: #C4D4F1;
+  border-color: #19AEFE;
+  color: #333;
+}
+
+/** Selectable day, hovered **/
+/* line 182, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-days span.k-active:hover {
+  border-color: #666;
+}
+
+/** Days outside of the month view (before the first day of the month, after the last day of the month) **/
+/* line 187, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae .k-days span.k-out-of-month {
+  color: #ddd;
+}
+
+/*-------------------------------------IE8 ONLY CODE BELOW THIS LINE--------------------------------------------*/
+/* line 193, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.ie8.k-floating {
+  border: 1px solid #ccc;
+}
+
+/* line 197, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.ie8 .k-btn-close {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: url("close.png") no-repeat top left;
+}
+
+/* line 203, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.ie8 .k-btn-close:after {
+  display: none;
+}
+
+/* line 208, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.ie8 .k-btn-previous-month,
+.kalendae.ie8 .k-btn-next-month,
+.kalendae.ie8 .k-btn-previous-year,
+.kalendae.ie8 .k-btn-next-year {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  background: #777777 url("arrows.png") no-repeat center left;
+  position: absolute;
+  top: 0;
+}
+
+/* line 211, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.ie8 .k-btn-next-month,
+.kalendae.ie8 .k-btn-next-year {
+  background-position: center right;
+}
+
+/* line 214, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.ie8 .k-btn-previous-month:hover,
+.kalendae.ie8 .k-btn-next-month:hover {
+  background-color: #7EA0E2;
+}
+
+/* line 217, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.ie8 .k-btn-previous-year,
+.kalendae.ie8 .k-btn-next-year {
+  background-color: #333;
+}
+
+/* line 220, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.ie8 .k-btn-previous-year:hover,
+.kalendae.ie8 .k-btn-next-year:hover {
+  background-color: #6FDF81;
+}
+
+/* line 225, ../../app/styles/sass/modules/_kalendae.scss */
+.kalendae.ie8 .k-btn-previous-month:after,
+.kalendae.ie8 .k-btn-next-month:after,
+.kalendae.ie8 .k-btn-previous-year:after,
+.kalendae.ie8 .k-btn-next-year:after {
+  display: none;
+}
+
+/* line 4, ../../app/widgets/expanding_textarea/_expanding_textarea.scss */
+.expanding-textarea textarea {
+  margin-bottom: 0.375em;
+  -webkit-box-shadow: inset 0px 0px 5px #333333;
+  -moz-box-shadow: inset 0px 0px 5px #333333;
+  box-shadow: inset 0px 0px 5px #333333;
+  border-width: 0.07143em;
+  border-style: solid;
+  padding: 1.42857em;
+  padding: 10px;
+  background: transparent;
+  outline: none;
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  overflow: hidden;
+  font: inherit;
+  line-height: 1.5;
+  /* Make the text soft-wrap */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #4D4D4D;
+  /* grey30 */
+  border-color: #CCC;
+  /* grey80 */
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* line 14, ../../app/styles/sass/screen.scss */
+html {
+  overflow-y: scroll;
+}
+
+/* line 18, ../../app/styles/sass/screen.scss */
+#menu-bar {
+  -webkit-box-shadow: 0 3px 7px #666666;
+  -moz-box-shadow: 0 3px 7px #666666;
+  box-shadow: 0 3px 7px #666666;
+  margin-bottom: 3em;
+  background: #1a1a1a;
+  height: 3em;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+/* line 30, ../../app/styles/sass/screen.scss */
+#menu-bar #menu-container {
+  font-size: 1.28571em;
+  line-height: 2.33333em;
+  color: #e6e6e6;
+}
+/* line 34, ../../app/styles/sass/screen.scss */
+#menu-bar #menu-container a {
+  color: #e6e6e6;
+}
+/* line 37, ../../app/styles/sass/screen.scss */
+#menu-bar #menu-container .search {
+  margin-left: 10%;
+}
+/* line 40, ../../app/styles/sass/screen.scss */
+#menu-bar #menu-container .dropdown-menu {
+  font-size: 2em;
+  line-height: 1.16667em;
+  cursor: pointer;
+  float: right;
+}
+/* line 45, ../../app/styles/sass/screen.scss */
+#menu-bar #menu-container .dropdown-menu ul.dropdown {
+  font-size: 0.44444em;
+  line-height: 1.3125em;
+  list-style: none;
+  background: #333333;
+  border-color: #1a1a1a;
+  color: #cccccc;
+  margin: 0;
+  padding: 0.375em 0 0.375em 0;
+  position: absolute;
+  top: 45.5px;
+  width: 252px;
+}
+/* line 11, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/compass-0.13.alpha.4/frameworks/compass/stylesheets/compass/typography/lists/_bullets.scss */
+#menu-bar #menu-container .dropdown-menu ul.dropdown li {
+  list-style-image: none;
+  list-style-type: none;
+  margin-left: 0;
+}
+/* line 58, ../../app/styles/sass/screen.scss */
+#menu-bar #menu-container .dropdown-menu ul.dropdown li {
+  color: #cccccc;
+  padding: 0.75em 1.5em;
+}
+/* line 62, ../../app/styles/sass/screen.scss */
+#menu-bar #menu-container .dropdown-menu ul.dropdown li:hover {
+  background: #666666;
+}
+
+/* line 72, ../../app/styles/sass/screen.scss */
+#wrapper {
+  position: relative;
+  margin-top: 6em;
+}
+
+/* line 77, ../../app/styles/sass/screen.scss */
+#posts {
+  position: relative;
+}
+@media only screen and (max-width: 1050px) {
+  /* line 82, ../../app/styles/sass/screen.scss */
+  #posts h1:first-child {
+    margin-top: 47px;
+  }
+}
+/* line 86, ../../app/styles/sass/screen.scss */
+#posts .throbber.global-loading {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+/* line 93, ../../app/styles/sass/screen.scss */
+.post {
+  margin-bottom: 6em;
+  position: relative;
+}
+/* line 97, ../../app/styles/sass/screen.scss */
+.post h1 {
+  white-space: pre-wrap;
+}
+/* line 100, ../../app/styles/sass/screen.scss */
+.post p {
+  white-space: pre;
+  white-space: pre-wrap;
+  white-space: pre-line;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -hp-pre-wrap;
+  word-wrap: break-word;
+}
+/* line 103, ../../app/styles/sass/screen.scss */
+.post .post-date {
+  display: block;
+  margin-bottom: -1.90909em;
+}
+/* line 107, ../../app/styles/sass/screen.scss */
+.post img, .post video {
+  max-width: 100%;
+}
+
+/* line 112, ../../app/styles/sass/screen.scss */
+input, textarea {
+  border-width: 0.07143em;
+  border-style: solid;
+  padding: 0.67857em;
+  border-color: #cccccc;
+  color: #333333;
+}
+
+/* line 119, ../../app/styles/sass/screen.scss */
+.expanding-textarea textarea {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+}
+
+/* line 126, ../../app/styles/sass/screen.scss */
+#post-edit {
+  margin-bottom: 15em;
+}
+@media only screen and (max-width: 700px) {
+  /* line 126, ../../app/styles/sass/screen.scss */
+  #post-edit {
+    margin-bottom: 7.5em;
+  }
+}
+/* line 132, ../../app/styles/sass/screen.scss */
+#post-edit #last-saved {
+  float: right;
+  font-size: 65%;
+  font-weight: normal;
+}
+/* line 137, ../../app/styles/sass/screen.scss */
+#post-edit .title {
+  margin-bottom: 0.75em;
+  width: 100%;
+}
+/* line 141, ../../app/styles/sass/screen.scss */
+#post-edit .title .expandingText textarea {
+  font-size: 2.57143em;
+  line-height: 1.16667em;
+  border: 0;
+  color: #222;
+  padding: 0;
+}
+/* line 150, ../../app/styles/sass/screen.scss */
+#post-edit .body {
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+  width: 100%;
+}
+/* line 156, ../../app/styles/sass/screen.scss */
+#post-edit .less-important-button {
+  font-size: 14px;
+  padding: 0.5em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 0.75em;
+  -moz-border-radius: 0.75em;
+  border-radius: 0.75em;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFCCCCCC', endColorstr='#FF999999');
+  background: -webkit-linear-gradient(#cccccc, #b3b3b3);
+  background: -moz-linear-gradient(#cccccc, #b3b3b3);
+  background: -o-linear-gradient(#cccccc, #b3b3b3);
+  background: linear-gradient(#cccccc, #b3b3b3);
+  -webkit-box-shadow: #f2f2f2 0 1px 0 inset;
+  -moz-box-shadow: #f2f2f2 0 1px 0 inset;
+  box-shadow: #f2f2f2 0 1px 0 inset;
+  border: 1px solid #a6a6a6;
+  color: white;
+  text-shadow: #8a8a8a 0 -1px 0;
+  font-weight: normal;
+  margin-left: 10px;
+}
+/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#post-edit .less-important-button:hover {
+  text-decoration: none;
+}
+/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#post-edit .less-important-button:hover {
+  background-color: #a6a6a6;
+  background: -webkit-linear-gradient(#bfbfbf, #a6a6a6);
+  background: -moz-linear-gradient(#bfbfbf, #a6a6a6);
+  background: -o-linear-gradient(#bfbfbf, #a6a6a6);
+  background: linear-gradient(#bfbfbf, #a6a6a6);
+}
+/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#post-edit .less-important-button:active {
+  -webkit-box-shadow: #9e9e9e 0 1px 2px inset;
+  -moz-box-shadow: #9e9e9e 0 1px 2px inset;
+  box-shadow: #9e9e9e 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#post-edit .less-important-button.disabled, #post-edit .less-important-button[disabled] {
+  opacity: 0.6;
+  background: #b3b3b3;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+#post-edit .less-important-button::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+/* line 162, ../../app/styles/sass/screen.scss */
+#post-edit .delete {
+  font-size: 14px;
+  padding: 0.5em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 0.75em;
+  -moz-border-radius: 0.75em;
+  border-radius: 0.75em;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFCCCCCC', endColorstr='#FF999999');
+  background: -webkit-linear-gradient(#cccccc, #b3b3b3);
+  background: -moz-linear-gradient(#cccccc, #b3b3b3);
+  background: -o-linear-gradient(#cccccc, #b3b3b3);
+  background: linear-gradient(#cccccc, #b3b3b3);
+  -webkit-box-shadow: #f2f2f2 0 1px 0 inset;
+  -moz-box-shadow: #f2f2f2 0 1px 0 inset;
+  box-shadow: #f2f2f2 0 1px 0 inset;
+  border: 1px solid #a6a6a6;
+  color: white;
+  text-shadow: #8a8a8a 0 -1px 0;
+  float: right;
+}
+/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#post-edit .delete:hover {
+  text-decoration: none;
+}
+/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#post-edit .delete:hover {
+  background-color: #a6a6a6;
+  background: -webkit-linear-gradient(#bfbfbf, #a6a6a6);
+  background: -moz-linear-gradient(#bfbfbf, #a6a6a6);
+  background: -o-linear-gradient(#bfbfbf, #a6a6a6);
+  background: linear-gradient(#bfbfbf, #a6a6a6);
+}
+/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#post-edit .delete:active {
+  -webkit-box-shadow: #9e9e9e 0 1px 2px inset;
+  -moz-box-shadow: #9e9e9e 0 1px 2px inset;
+  box-shadow: #9e9e9e 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#post-edit .delete.disabled, #post-edit .delete[disabled] {
+  opacity: 0.6;
+  background: #b3b3b3;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+#post-edit .delete::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+/* line 166, ../../app/styles/sass/screen.scss */
+#post-edit .date-edit {
+  margin-bottom: 0.75em;
+  display: none;
+}
+/* line 171, ../../app/styles/sass/screen.scss */
+#post-edit .date {
+  margin-bottom: 0.375em;
+  display: block;
+}
+/* line 176, ../../app/styles/sass/screen.scss */
+#post-edit .show-date-edit {
+  display: none;
+  font-weight: normal;
+  cursor: pointer;
+  color: #999999;
+  text-decoration: underline;
+}
+
+/* line 185, ../../app/styles/sass/screen.scss */
+input[type="submit"], button, .button {
+  font-size: 14px;
+  padding: 0.5em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 0.75em;
+  -moz-border-radius: 0.75em;
+  border-radius: 0.75em;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFED1C00', endColorstr='#FF871000');
+  background: -webkit-linear-gradient(#ed1c00, #ba1600);
+  background: -moz-linear-gradient(#ed1c00, #ba1600);
+  background: -o-linear-gradient(#ed1c00, #ba1600);
+  background: linear-gradient(#ed1c00, #ba1600);
+  -webkit-box-shadow: #ff523b 0 1px 0 inset;
+  -moz-box-shadow: #ff523b 0 1px 0 inset;
+  box-shadow: #ff523b 0 1px 0 inset;
+  border: 1px solid #a11300;
+  color: white;
+  text-shadow: #680c00 0 -1px 0;
+  text-decoration: none;
+  color: white;
+  font-weight: normal;
+}
+/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+input[type="submit"]:hover, button:hover, .button:hover {
+  text-decoration: none;
+}
+/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+input[type="submit"]:hover, button:hover, .button:hover {
+  background-color: #a11300;
+  background: -webkit-linear-gradient(#d31900, #a11300);
+  background: -moz-linear-gradient(#d31900, #a11300);
+  background: -o-linear-gradient(#d31900, #a11300);
+  background: linear-gradient(#d31900, #a11300);
+}
+/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+input[type="submit"]:active, button:active, .button:active {
+  -webkit-box-shadow: #911100 0 1px 2px inset;
+  -moz-box-shadow: #911100 0 1px 2px inset;
+  box-shadow: #911100 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+input[type="submit"].disabled, input[type="submit"][disabled], button.disabled, button[disabled], .button.disabled, .button[disabled] {
+  opacity: 0.6;
+  background: #ba1600;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+input[type="submit"]::-moz-focus-inner, button::-moz-focus-inner, .button::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+/* line 190, ../../app/styles/sass/screen.scss */
+input[type="submit"]:visited, button:visited, .button:visited {
+  color: white;
+}
+/* line 193, ../../app/styles/sass/screen.scss */
+input[type="submit"]:hover, button:hover, .button:hover {
+  color: white;
+  text-decoration: none;
+}
+
+/* line 199, ../../app/styles/sass/screen.scss */
+#loading-posts {
+  margin-top: 0em;
+  padding-top: 0.375em;
+  padding-bottom: 0.375em;
+  margin-bottom: 3em;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  font-size: 1.5em;
+  line-height: 2em;
+  cursor: pointer;
+  color: #5F6B61;
+  text-align: center;
+}
+
+/* line 210, ../../app/styles/sass/screen.scss */
+#login label {
+  width: 90px;
+  display: inline-block;
+}
+
+@media only screen and (min-width: 1050px) {
+  /* line 216, ../../app/styles/sass/screen.scss */
+  .post-action {
+    position: absolute;
+    top: 10px;
+    right: -150px;
+  }
+}
+
+/* line 225, ../../app/styles/sass/screen.scss */
+#search-page .search-meta {
+  font-size: 1em;
+  line-height: 1.5em;
+  color: #999999;
+  clear: both;
+}
+/* line 231, ../../app/styles/sass/screen.scss */
+#search-page em {
+  font-style: normal;
+  font-weight: bold;
+}
+/* line 235, ../../app/styles/sass/screen.scss */
+#search-page h3 {
+  font-size: 1.28571em;
+  line-height: 1.16667em;
+  margin-bottom: 0em;
+  margin-top: 0em;
+  font-weight: normal;
+}
+/* line 241, ../../app/styles/sass/screen.scss */
+#search-page h3 a {
+  font-weight: normal;
+}
+/* line 245, ../../app/styles/sass/screen.scss */
+#search-page .created {
+  font-size: 0.72222em;
+  line-height: 1.61538em;
+  color: #999999;
+}
+/* line 250, ../../app/styles/sass/screen.scss */
+#search-page p {
+  font-size: 1em;
+  line-height: 1.5em;
+}
+/* line 253, ../../app/styles/sass/screen.scss */
+#search-page .search-result {
+  margin-bottom: 1.5em;
+}
+/* line 256, ../../app/styles/sass/screen.scss */
+#search-page input {
+  width: 50%;
+  margin-right: 2%;
+}
+/* line 260, ../../app/styles/sass/screen.scss */
+#search-page button {
+  font-size: 14px;
+  padding: 0.5em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 0.75em;
+  -moz-border-radius: 0.75em;
+  border-radius: 0.75em;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFCCCCCC', endColorstr='#FF999999');
+  background: -webkit-linear-gradient(#cccccc, #b3b3b3);
+  background: -moz-linear-gradient(#cccccc, #b3b3b3);
+  background: -o-linear-gradient(#cccccc, #b3b3b3);
+  background: linear-gradient(#cccccc, #b3b3b3);
+  -webkit-box-shadow: #f2f2f2 0 1px 0 inset;
+  -moz-box-shadow: #f2f2f2 0 1px 0 inset;
+  box-shadow: #f2f2f2 0 1px 0 inset;
+  border: 1px solid #a6a6a6;
+  color: white;
+  text-shadow: #8a8a8a 0 -1px 0;
+}
+/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#search-page button:hover {
+  text-decoration: none;
+}
+/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#search-page button:hover {
+  background-color: #a6a6a6;
+  background: -webkit-linear-gradient(#bfbfbf, #a6a6a6);
+  background: -moz-linear-gradient(#bfbfbf, #a6a6a6);
+  background: -o-linear-gradient(#bfbfbf, #a6a6a6);
+  background: linear-gradient(#bfbfbf, #a6a6a6);
+}
+/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#search-page button:active {
+  -webkit-box-shadow: #9e9e9e 0 1px 2px inset;
+  -moz-box-shadow: #9e9e9e 0 1px 2px inset;
+  box-shadow: #9e9e9e 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#search-page button.disabled, #search-page button[disabled] {
+  opacity: 0.6;
+  background: #b3b3b3;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+#search-page button::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+/* line 263, ../../app/styles/sass/screen.scss */
+#search-page .loading {
+  display: none;
+  margin-left: 1%;
+}
+
+/* line 269, ../../app/styles/sass/screen.scss */
+.error {
+  border-width: 0.07143em;
+  border-style: solid;
+  padding: 0.67857em;
+  margin-bottom: 1.5em;
+  background: #F8DCD9;
+  border-color: #ED1C00;
+  color: #DD2020;
+  display: none;
+  font-weight: bold;
+}
+
+/* line 281, ../../app/styles/sass/screen.scss */
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+/* line 285, ../../app/styles/sass/screen.scss */
+.throbber {
+  display: none;
+  position: relative;
+  margin-left: 0.75em;
+  position: relative;
+  top: 4px;
+}
+
+/* line 293, ../../app/styles/sass/screen.scss */
+.throbber div {
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+  width: 12%;
+  height: 26%;
+  background: gray;
+  position: absolute;
+  left: 44.5%;
+  top: 37%;
+  opacity: 0;
+}
+
+/* line 307, ../../app/styles/sass/screen.scss */
+.throbber.light div {
+  background: #f2f2f2;
+}
+
+/* line 311, ../../app/styles/sass/screen.scss */
+.throbber.show {
+  display: inline-block;
+}
+
+/* line 315, ../../app/styles/sass/screen.scss */
+.throbber.button-throbber {
+  height: 24px;
+  width: 24px;
+  position: relative;
+  top: 8px;
+}
+
+@-moz-keyframes fade {
+  /* line 323, ../../app/styles/sass/screen.scss */
+  from {
+    opacity: 1;
+  }
+
+  /* line 324, ../../app/styles/sass/screen.scss */
+  to {
+    opacity: 0.25;
+  }
+}
+
+@-webkit-keyframes fade {
+  /* line 323, ../../app/styles/sass/screen.scss */
+  from {
+    opacity: 1;
+  }
+
+  /* line 324, ../../app/styles/sass/screen.scss */
+  to {
+    opacity: 0.25;
+  }
+}
+
+@-o-keyframes fade {
+  /* line 323, ../../app/styles/sass/screen.scss */
+  from {
+    opacity: 1;
+  }
+
+  /* line 324, ../../app/styles/sass/screen.scss */
+  to {
+    opacity: 0.25;
+  }
+}
+
+@keyframes fade {
+  /* line 323, ../../app/styles/sass/screen.scss */
+  from {
+    opacity: 1;
+  }
+
+  /* line 324, ../../app/styles/sass/screen.scss */
+  to {
+    opacity: 0.25;
+  }
+}
+
+/* line 326, ../../app/styles/sass/screen.scss */
+.alert-message {
+  background: #EBFFE7;
+  border: 3px solid #27940B;
+  left: 4.5em;
+  right: 4.5em;
+  top: 4.5em;
+  padding: 1.5em;
+  position: absolute;
+}

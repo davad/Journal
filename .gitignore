@@ -1,4 +1,4 @@
 node_modules/
-public
 .sass-cache/
 build
+.env
