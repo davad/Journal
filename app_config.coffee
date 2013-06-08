@@ -9,6 +9,5 @@ config.elasticSearchHost = url.parse(config.elasticSearchHost)
 config.elasticSearchHost.index = process.env.ELASTICSEARCH_INDEX ? 'journal_posts'
 config.elasticSearchHost.protocol = config.elasticSearchHost.protocol.slice(0, -1) #url.parse leaves a colon on the end of the protocol, which node-elastical has a problem with
 config.elasticSearchHost.host = config.elasticSearchHost.hostname #url.parse leaves the port at the end of host (but not hostname), which node-elastical has a problem with
-config.elasticSearchHost.curlDebug = true
 
 module.exports = config
