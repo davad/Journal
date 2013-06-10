@@ -2,7 +2,6 @@
 require 'susy'
 require 'compass-normalize'
 require 'sassy-buttons'
-require 'animation'
 
 # Set this to the root of your project when deployed:
 http_path = "/"
