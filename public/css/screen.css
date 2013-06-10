@@ -1097,12 +1097,12 @@ hr {
   width: 100%;
 }
 
-/* line 14, ../../app/styles/sass/screen.scss */
+/* line 15, ../../app/styles/sass/screen.scss */
 html {
   overflow-y: scroll;
 }
 
-/* line 18, ../../app/styles/sass/screen.scss */
+/* line 19, ../../app/styles/sass/screen.scss */
 #menu-bar {
   -webkit-box-shadow: 0 3px 7px #666666;
   -moz-box-shadow: 0 3px 7px #666666;
@@ -1115,28 +1115,28 @@ html {
   width: 100%;
   z-index: 100;
 }
-/* line 30, ../../app/styles/sass/screen.scss */
+/* line 31, ../../app/styles/sass/screen.scss */
 #menu-bar #menu-container {
   font-size: 1.28571em;
   line-height: 2.33333em;
   color: #e6e6e6;
 }
-/* line 34, ../../app/styles/sass/screen.scss */
+/* line 35, ../../app/styles/sass/screen.scss */
 #menu-bar #menu-container a {
   color: #e6e6e6;
 }
-/* line 37, ../../app/styles/sass/screen.scss */
+/* line 38, ../../app/styles/sass/screen.scss */
 #menu-bar #menu-container .search {
   margin-left: 10%;
 }
-/* line 40, ../../app/styles/sass/screen.scss */
+/* line 41, ../../app/styles/sass/screen.scss */
 #menu-bar #menu-container .dropdown-menu {
   font-size: 2em;
   line-height: 1.16667em;
   cursor: pointer;
   float: right;
 }
-/* line 45, ../../app/styles/sass/screen.scss */
+/* line 46, ../../app/styles/sass/screen.scss */
 #menu-bar #menu-container .dropdown-menu ul.dropdown {
   font-size: 0.44444em;
   line-height: 1.3125em;
@@ -1156,49 +1156,49 @@ html {
   list-style-type: none;
   margin-left: 0;
 }
-/* line 58, ../../app/styles/sass/screen.scss */
+/* line 59, ../../app/styles/sass/screen.scss */
 #menu-bar #menu-container .dropdown-menu ul.dropdown li {
   color: #cccccc;
   padding: 0.75em 1.5em;
 }
-/* line 62, ../../app/styles/sass/screen.scss */
+/* line 63, ../../app/styles/sass/screen.scss */
 #menu-bar #menu-container .dropdown-menu ul.dropdown li:hover {
   background: #666666;
 }
 
-/* line 72, ../../app/styles/sass/screen.scss */
+/* line 73, ../../app/styles/sass/screen.scss */
 #wrapper {
   position: relative;
   margin-top: 6em;
 }
 
-/* line 77, ../../app/styles/sass/screen.scss */
+/* line 78, ../../app/styles/sass/screen.scss */
 #posts {
   position: relative;
 }
 @media only screen and (max-width: 1050px) {
-  /* line 82, ../../app/styles/sass/screen.scss */
+  /* line 83, ../../app/styles/sass/screen.scss */
   #posts h1:first-child {
     margin-top: 47px;
   }
 }
-/* line 86, ../../app/styles/sass/screen.scss */
+/* line 87, ../../app/styles/sass/screen.scss */
 #posts .throbber.global-loading {
   position: absolute;
   right: 0;
   top: 0;
 }
 
-/* line 93, ../../app/styles/sass/screen.scss */
+/* line 94, ../../app/styles/sass/screen.scss */
 .post {
   margin-bottom: 6em;
   position: relative;
 }
-/* line 97, ../../app/styles/sass/screen.scss */
+/* line 98, ../../app/styles/sass/screen.scss */
 .post h1 {
   white-space: pre-wrap;
 }
-/* line 100, ../../app/styles/sass/screen.scss */
+/* line 101, ../../app/styles/sass/screen.scss */
 .post p {
   white-space: pre;
   white-space: pre-wrap;
@@ -1209,17 +1209,17 @@ html {
   white-space: -hp-pre-wrap;
   word-wrap: break-word;
 }
-/* line 103, ../../app/styles/sass/screen.scss */
+/* line 104, ../../app/styles/sass/screen.scss */
 .post .post-date {
   display: block;
   margin-bottom: -1.90909em;
 }
-/* line 107, ../../app/styles/sass/screen.scss */
+/* line 108, ../../app/styles/sass/screen.scss */
 .post img, .post video {
   max-width: 100%;
 }
 
-/* line 112, ../../app/styles/sass/screen.scss */
+/* line 113, ../../app/styles/sass/screen.scss */
 input, textarea {
   border-width: 0.07143em;
   border-style: solid;
@@ -1228,7 +1228,7 @@ input, textarea {
   color: #333333;
 }
 
-/* line 119, ../../app/styles/sass/screen.scss */
+/* line 120, ../../app/styles/sass/screen.scss */
 .expanding-textarea textarea {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -1237,28 +1237,28 @@ input, textarea {
   padding: 0;
 }
 
-/* line 126, ../../app/styles/sass/screen.scss */
+/* line 127, ../../app/styles/sass/screen.scss */
 #post-edit {
   margin-bottom: 15em;
 }
 @media only screen and (max-width: 700px) {
-  /* line 126, ../../app/styles/sass/screen.scss */
+  /* line 127, ../../app/styles/sass/screen.scss */
   #post-edit {
     margin-bottom: 7.5em;
   }
 }
-/* line 132, ../../app/styles/sass/screen.scss */
+/* line 133, ../../app/styles/sass/screen.scss */
 #post-edit #last-saved {
   float: right;
   font-size: 65%;
   font-weight: normal;
 }
-/* line 137, ../../app/styles/sass/screen.scss */
+/* line 138, ../../app/styles/sass/screen.scss */
 #post-edit .title {
   margin-bottom: 0.75em;
   width: 100%;
 }
-/* line 141, ../../app/styles/sass/screen.scss */
+/* line 142, ../../app/styles/sass/screen.scss */
 #post-edit .title .expandingText textarea {
   font-size: 2.57143em;
   line-height: 1.16667em;
@@ -1266,18 +1266,20 @@ input, textarea {
   color: #222;
   padding: 0;
 }
-/* line 150, ../../app/styles/sass/screen.scss */
+/* line 151, ../../app/styles/sass/screen.scss */
 #post-edit .body {
   margin-top: 1.5em;
   margin-bottom: 0.75em;
   width: 100%;
 }
-/* line 156, ../../app/styles/sass/screen.scss */
+/* line 157, ../../app/styles/sass/screen.scss */
 #post-edit .less-important-button {
   font-size: 14px;
   padding: 0.5em 1.5em;
+  color: white;
   display: inline-block;
   cursor: pointer;
+  text-decoration: none;
   -webkit-border-radius: 0.75em;
   -moz-border-radius: 0.75em;
   border-radius: 0.75em;
@@ -1291,16 +1293,15 @@ input, textarea {
   -moz-box-shadow: #f2f2f2 0 1px 0 inset;
   box-shadow: #f2f2f2 0 1px 0 inset;
   border: 1px solid #a6a6a6;
-  color: white;
   text-shadow: #8a8a8a 0 -1px 0;
   font-weight: normal;
   margin-left: 10px;
 }
-/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #post-edit .less-important-button:hover {
   text-decoration: none;
 }
-/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #post-edit .less-important-button:hover {
   background-color: #a6a6a6;
   background: -webkit-linear-gradient(#bfbfbf, #a6a6a6);
@@ -1308,14 +1309,15 @@ input, textarea {
   background: -o-linear-gradient(#bfbfbf, #a6a6a6);
   background: linear-gradient(#bfbfbf, #a6a6a6);
 }
-/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #post-edit .less-important-button:active {
   -webkit-box-shadow: #9e9e9e 0 1px 2px inset;
   -moz-box-shadow: #9e9e9e 0 1px 2px inset;
   box-shadow: #9e9e9e 0 1px 2px inset;
 }
-/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #post-edit .less-important-button.disabled, #post-edit .less-important-button[disabled] {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
   opacity: 0.6;
   background: #b3b3b3;
   cursor: default;
@@ -1323,17 +1325,19 @@ input, textarea {
   -moz-box-shadow: none;
   box-shadow: none;
 }
-/* line 73, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+/* line 76, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/_sassy-buttons.sass */
 #post-edit .less-important-button::-moz-focus-inner {
   padding: 0 !important;
   margin: -1px !important;
 }
-/* line 162, ../../app/styles/sass/screen.scss */
+/* line 163, ../../app/styles/sass/screen.scss */
 #post-edit .delete {
   font-size: 14px;
   padding: 0.5em 1.5em;
+  color: white;
   display: inline-block;
   cursor: pointer;
+  text-decoration: none;
   -webkit-border-radius: 0.75em;
   -moz-border-radius: 0.75em;
   border-radius: 0.75em;
@@ -1347,15 +1351,14 @@ input, textarea {
   -moz-box-shadow: #f2f2f2 0 1px 0 inset;
   box-shadow: #f2f2f2 0 1px 0 inset;
   border: 1px solid #a6a6a6;
-  color: white;
   text-shadow: #8a8a8a 0 -1px 0;
   float: right;
 }
-/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #post-edit .delete:hover {
   text-decoration: none;
 }
-/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #post-edit .delete:hover {
   background-color: #a6a6a6;
   background: -webkit-linear-gradient(#bfbfbf, #a6a6a6);
@@ -1363,14 +1366,15 @@ input, textarea {
   background: -o-linear-gradient(#bfbfbf, #a6a6a6);
   background: linear-gradient(#bfbfbf, #a6a6a6);
 }
-/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #post-edit .delete:active {
   -webkit-box-shadow: #9e9e9e 0 1px 2px inset;
   -moz-box-shadow: #9e9e9e 0 1px 2px inset;
   box-shadow: #9e9e9e 0 1px 2px inset;
 }
-/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #post-edit .delete.disabled, #post-edit .delete[disabled] {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
   opacity: 0.6;
   background: #b3b3b3;
   cursor: default;
@@ -1378,22 +1382,22 @@ input, textarea {
   -moz-box-shadow: none;
   box-shadow: none;
 }
-/* line 73, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+/* line 76, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/_sassy-buttons.sass */
 #post-edit .delete::-moz-focus-inner {
   padding: 0 !important;
   margin: -1px !important;
 }
-/* line 166, ../../app/styles/sass/screen.scss */
+/* line 167, ../../app/styles/sass/screen.scss */
 #post-edit .date-edit {
   margin-bottom: 0.75em;
   display: none;
 }
-/* line 171, ../../app/styles/sass/screen.scss */
+/* line 172, ../../app/styles/sass/screen.scss */
 #post-edit .date {
   margin-bottom: 0.375em;
   display: block;
 }
-/* line 176, ../../app/styles/sass/screen.scss */
+/* line 177, ../../app/styles/sass/screen.scss */
 #post-edit .show-date-edit {
   display: none;
   font-weight: normal;
@@ -1402,12 +1406,14 @@ input, textarea {
   text-decoration: underline;
 }
 
-/* line 185, ../../app/styles/sass/screen.scss */
+/* line 186, ../../app/styles/sass/screen.scss */
 input[type="submit"], button, .button {
   font-size: 14px;
   padding: 0.5em 1.5em;
+  color: white;
   display: inline-block;
   cursor: pointer;
+  text-decoration: none;
   -webkit-border-radius: 0.75em;
   -moz-border-radius: 0.75em;
   border-radius: 0.75em;
@@ -1421,17 +1427,16 @@ input[type="submit"], button, .button {
   -moz-box-shadow: #ff523b 0 1px 0 inset;
   box-shadow: #ff523b 0 1px 0 inset;
   border: 1px solid #a11300;
-  color: white;
   text-shadow: #680c00 0 -1px 0;
   text-decoration: none;
   color: white;
   font-weight: normal;
 }
-/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 input[type="submit"]:hover, button:hover, .button:hover {
   text-decoration: none;
 }
-/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 input[type="submit"]:hover, button:hover, .button:hover {
   background-color: #a11300;
   background: -webkit-linear-gradient(#d31900, #a11300);
@@ -1439,14 +1444,15 @@ input[type="submit"]:hover, button:hover, .button:hover {
   background: -o-linear-gradient(#d31900, #a11300);
   background: linear-gradient(#d31900, #a11300);
 }
-/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 input[type="submit"]:active, button:active, .button:active {
   -webkit-box-shadow: #911100 0 1px 2px inset;
   -moz-box-shadow: #911100 0 1px 2px inset;
   box-shadow: #911100 0 1px 2px inset;
 }
-/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 input[type="submit"].disabled, input[type="submit"][disabled], button.disabled, button[disabled], .button.disabled, .button[disabled] {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
   opacity: 0.6;
   background: #ba1600;
   cursor: default;
@@ -1454,22 +1460,22 @@ input[type="submit"].disabled, input[type="submit"][disabled], button.disabled, 
   -moz-box-shadow: none;
   box-shadow: none;
 }
-/* line 73, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+/* line 76, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/_sassy-buttons.sass */
 input[type="submit"]::-moz-focus-inner, button::-moz-focus-inner, .button::-moz-focus-inner {
   padding: 0 !important;
   margin: -1px !important;
 }
-/* line 190, ../../app/styles/sass/screen.scss */
+/* line 191, ../../app/styles/sass/screen.scss */
 input[type="submit"]:visited, button:visited, .button:visited {
   color: white;
 }
-/* line 193, ../../app/styles/sass/screen.scss */
+/* line 194, ../../app/styles/sass/screen.scss */
 input[type="submit"]:hover, button:hover, .button:hover {
   color: white;
   text-decoration: none;
 }
 
-/* line 199, ../../app/styles/sass/screen.scss */
+/* line 200, ../../app/styles/sass/screen.scss */
 #loading-posts {
   margin-top: 0em;
   padding-top: 0.375em;
@@ -1485,14 +1491,14 @@ input[type="submit"]:hover, button:hover, .button:hover {
   text-align: center;
 }
 
-/* line 210, ../../app/styles/sass/screen.scss */
+/* line 211, ../../app/styles/sass/screen.scss */
 #login label {
   width: 90px;
   display: inline-block;
 }
 
 @media only screen and (min-width: 1050px) {
-  /* line 216, ../../app/styles/sass/screen.scss */
+  /* line 217, ../../app/styles/sass/screen.scss */
   .post-action {
     position: absolute;
     top: 10px;
@@ -1500,19 +1506,19 @@ input[type="submit"]:hover, button:hover, .button:hover {
   }
 }
 
-/* line 225, ../../app/styles/sass/screen.scss */
+/* line 226, ../../app/styles/sass/screen.scss */
 #search-page .search-meta {
   font-size: 1em;
   line-height: 1.5em;
   color: #999999;
   clear: both;
 }
-/* line 231, ../../app/styles/sass/screen.scss */
+/* line 232, ../../app/styles/sass/screen.scss */
 #search-page em {
   font-style: normal;
   font-weight: bold;
 }
-/* line 235, ../../app/styles/sass/screen.scss */
+/* line 236, ../../app/styles/sass/screen.scss */
 #search-page h3 {
   font-size: 1.28571em;
   line-height: 1.16667em;
@@ -1520,36 +1526,38 @@ input[type="submit"]:hover, button:hover, .button:hover {
   margin-top: 0em;
   font-weight: normal;
 }
-/* line 241, ../../app/styles/sass/screen.scss */
+/* line 242, ../../app/styles/sass/screen.scss */
 #search-page h3 a {
   font-weight: normal;
 }
-/* line 245, ../../app/styles/sass/screen.scss */
+/* line 246, ../../app/styles/sass/screen.scss */
 #search-page .created {
   font-size: 0.72222em;
   line-height: 1.61538em;
   color: #999999;
 }
-/* line 250, ../../app/styles/sass/screen.scss */
+/* line 251, ../../app/styles/sass/screen.scss */
 #search-page p {
   font-size: 1em;
   line-height: 1.5em;
 }
-/* line 253, ../../app/styles/sass/screen.scss */
+/* line 254, ../../app/styles/sass/screen.scss */
 #search-page .search-result {
   margin-bottom: 1.5em;
 }
-/* line 256, ../../app/styles/sass/screen.scss */
+/* line 257, ../../app/styles/sass/screen.scss */
 #search-page input {
   width: 50%;
   margin-right: 2%;
 }
-/* line 260, ../../app/styles/sass/screen.scss */
+/* line 261, ../../app/styles/sass/screen.scss */
 #search-page button {
   font-size: 14px;
   padding: 0.5em 1.5em;
+  color: white;
   display: inline-block;
   cursor: pointer;
+  text-decoration: none;
   -webkit-border-radius: 0.75em;
   -moz-border-radius: 0.75em;
   border-radius: 0.75em;
@@ -1563,14 +1571,13 @@ input[type="submit"]:hover, button:hover, .button:hover {
   -moz-box-shadow: #f2f2f2 0 1px 0 inset;
   box-shadow: #f2f2f2 0 1px 0 inset;
   border: 1px solid #a6a6a6;
-  color: white;
   text-shadow: #8a8a8a 0 -1px 0;
 }
-/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 15, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #search-page button:hover {
   text-decoration: none;
 }
-/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 36, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #search-page button:hover {
   background-color: #a6a6a6;
   background: -webkit-linear-gradient(#bfbfbf, #a6a6a6);
@@ -1578,14 +1585,15 @@ input[type="submit"]:hover, button:hover, .button:hover {
   background: -o-linear-gradient(#bfbfbf, #a6a6a6);
   background: linear-gradient(#bfbfbf, #a6a6a6);
 }
-/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 39, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #search-page button:active {
   -webkit-box-shadow: #9e9e9e 0 1px 2px inset;
   -moz-box-shadow: #9e9e9e 0 1px 2px inset;
   box-shadow: #9e9e9e 0 1px 2px inset;
 }
-/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+/* line 6, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
 #search-page button.disabled, #search-page button[disabled] {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
   opacity: 0.6;
   background: #b3b3b3;
   cursor: default;
@@ -1593,18 +1601,18 @@ input[type="submit"]:hover, button:hover, .button:hover {
   -moz-box-shadow: none;
   box-shadow: none;
 }
-/* line 73, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+/* line 76, ../../../../../../../.rvm/gems/ruby-1.9.3-p194@compass/gems/sassy-buttons-0.2/stylesheets/_sassy-buttons.sass */
 #search-page button::-moz-focus-inner {
   padding: 0 !important;
   margin: -1px !important;
 }
-/* line 263, ../../app/styles/sass/screen.scss */
+/* line 264, ../../app/styles/sass/screen.scss */
 #search-page .loading {
   display: none;
   margin-left: 1%;
 }
 
-/* line 269, ../../app/styles/sass/screen.scss */
+/* line 270, ../../app/styles/sass/screen.scss */
 .error {
   border-width: 0.07143em;
   border-style: solid;
@@ -1617,12 +1625,12 @@ input[type="submit"]:hover, button:hover, .button:hover {
   font-weight: bold;
 }
 
-/* line 281, ../../app/styles/sass/screen.scss */
+/* line 282, ../../app/styles/sass/screen.scss */
 * {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-/* line 285, ../../app/styles/sass/screen.scss */
+/* line 286, ../../app/styles/sass/screen.scss */
 .throbber {
   display: none;
   position: relative;
@@ -1631,8 +1639,13 @@ input[type="submit"]:hover, button:hover, .button:hover {
   top: 4px;
 }
 
-/* line 293, ../../app/styles/sass/screen.scss */
+/* line 294, ../../app/styles/sass/screen.scss */
 .throbber div {
+  -webkit-animation: fade 1s linear infinite;
+  -moz-animation: fade 1s linear infinite;
+  -ms-animation: fade 1s linear infinite;
+  -o-animation: fade 1s linear infinite;
+  animation: fade 1s linear infinite;
   -webkit-border-radius: 50px;
   -moz-border-radius: 50px;
   border-radius: 50px;
@@ -1648,17 +1661,17 @@ input[type="submit"]:hover, button:hover, .button:hover {
   opacity: 0;
 }
 
-/* line 307, ../../app/styles/sass/screen.scss */
+/* line 309, ../../app/styles/sass/screen.scss */
 .throbber.light div {
   background: #f2f2f2;
 }
 
-/* line 311, ../../app/styles/sass/screen.scss */
+/* line 313, ../../app/styles/sass/screen.scss */
 .throbber.show {
   display: inline-block;
 }
 
-/* line 315, ../../app/styles/sass/screen.scss */
+/* line 317, ../../app/styles/sass/screen.scss */
 .throbber.button-throbber {
   height: 24px;
   width: 24px;
@@ -1666,55 +1679,235 @@ input[type="submit"]:hover, button:hover, .button:hover {
   top: 8px;
 }
 
+/* line 324, ../../app/styles/sass/screen.scss */
+.throbber div.bar1 {
+  -webkit-transform: rotate(0deg) translate(0, -142%);
+  -moz-transform: rotate(0deg) translate(0, -142%);
+  -ms-transform: rotate(0deg) translate(0, -142%);
+  -o-transform: rotate(0deg) translate(0, -142%);
+  transform: rotate(0deg) translate(0, -142%);
+  -webkit-animation-delay: 0s;
+  -moz-animation-delay: 0s;
+  -ms-animation-delay: 0s;
+  -o-animation-delay: 0s;
+  animation-delay: 0s;
+}
+
+/* line 325, ../../app/styles/sass/screen.scss */
+.throbber div.bar2 {
+  -webkit-transform: rotate(30deg) translate(0, -142%);
+  -moz-transform: rotate(30deg) translate(0, -142%);
+  -ms-transform: rotate(30deg) translate(0, -142%);
+  -o-transform: rotate(30deg) translate(0, -142%);
+  transform: rotate(30deg) translate(0, -142%);
+  -webkit-animation-delay: -0.9167s;
+  -moz-animation-delay: -0.9167s;
+  -ms-animation-delay: -0.9167s;
+  -o-animation-delay: -0.9167s;
+  animation-delay: -0.9167s;
+}
+
+/* line 326, ../../app/styles/sass/screen.scss */
+.throbber div.bar3 {
+  -webkit-transform: rotate(60deg) translate(0, -142%);
+  -moz-transform: rotate(60deg) translate(0, -142%);
+  -ms-transform: rotate(60deg) translate(0, -142%);
+  -o-transform: rotate(60deg) translate(0, -142%);
+  transform: rotate(60deg) translate(0, -142%);
+  -webkit-animation-delay: -0.833s;
+  -moz-animation-delay: -0.833s;
+  -ms-animation-delay: -0.833s;
+  -o-animation-delay: -0.833s;
+  animation-delay: -0.833s;
+}
+
+/* line 327, ../../app/styles/sass/screen.scss */
+.throbber div.bar4 {
+  -webkit-transform: rotate(90deg) translate(0, -142%);
+  -moz-transform: rotate(90deg) translate(0, -142%);
+  -ms-transform: rotate(90deg) translate(0, -142%);
+  -o-transform: rotate(90deg) translate(0, -142%);
+  transform: rotate(90deg) translate(0, -142%);
+  -webkit-animation-delay: -0.75s;
+  -moz-animation-delay: -0.75s;
+  -ms-animation-delay: -0.75s;
+  -o-animation-delay: -0.75s;
+  animation-delay: -0.75s;
+}
+
+/* line 328, ../../app/styles/sass/screen.scss */
+.throbber div.bar5 {
+  -webkit-transform: rotate(120deg) translate(0, -142%);
+  -moz-transform: rotate(120deg) translate(0, -142%);
+  -ms-transform: rotate(120deg) translate(0, -142%);
+  -o-transform: rotate(120deg) translate(0, -142%);
+  transform: rotate(120deg) translate(0, -142%);
+  -webkit-animation-delay: -0.667s;
+  -moz-animation-delay: -0.667s;
+  -ms-animation-delay: -0.667s;
+  -o-animation-delay: -0.667s;
+  animation-delay: -0.667s;
+}
+
+/* line 329, ../../app/styles/sass/screen.scss */
+.throbber div.bar6 {
+  -webkit-transform: rotate(150deg) translate(0, -142%);
+  -moz-transform: rotate(150deg) translate(0, -142%);
+  -ms-transform: rotate(150deg) translate(0, -142%);
+  -o-transform: rotate(150deg) translate(0, -142%);
+  transform: rotate(150deg) translate(0, -142%);
+  -webkit-animation-delay: -0.5833s;
+  -moz-animation-delay: -0.5833s;
+  -ms-animation-delay: -0.5833s;
+  -o-animation-delay: -0.5833s;
+  animation-delay: -0.5833s;
+}
+
+/* line 330, ../../app/styles/sass/screen.scss */
+.throbber div.bar7 {
+  -webkit-transform: rotate(180deg) translate(0, -142%);
+  -moz-transform: rotate(180deg) translate(0, -142%);
+  -ms-transform: rotate(180deg) translate(0, -142%);
+  -o-transform: rotate(180deg) translate(0, -142%);
+  transform: rotate(180deg) translate(0, -142%);
+  -webkit-animation-delay: -0.5s;
+  -moz-animation-delay: -0.5s;
+  -ms-animation-delay: -0.5s;
+  -o-animation-delay: -0.5s;
+  animation-delay: -0.5s;
+}
+
+/* line 331, ../../app/styles/sass/screen.scss */
+.throbber div.bar8 {
+  -webkit-transform: rotate(210deg) translate(0, -142%);
+  -moz-transform: rotate(210deg) translate(0, -142%);
+  -ms-transform: rotate(210deg) translate(0, -142%);
+  -o-transform: rotate(210deg) translate(0, -142%);
+  transform: rotate(210deg) translate(0, -142%);
+  -webkit-animation-delay: -0.41667s;
+  -moz-animation-delay: -0.41667s;
+  -ms-animation-delay: -0.41667s;
+  -o-animation-delay: -0.41667s;
+  animation-delay: -0.41667s;
+}
+
+/* line 332, ../../app/styles/sass/screen.scss */
+.throbber div.bar9 {
+  -webkit-transform: rotate(240deg) translate(0, -142%);
+  -moz-transform: rotate(240deg) translate(0, -142%);
+  -ms-transform: rotate(240deg) translate(0, -142%);
+  -o-transform: rotate(240deg) translate(0, -142%);
+  transform: rotate(240deg) translate(0, -142%);
+  -webkit-animation-delay: -0.333s;
+  -moz-animation-delay: -0.333s;
+  -ms-animation-delay: -0.333s;
+  -o-animation-delay: -0.333s;
+  animation-delay: -0.333s;
+}
+
+/* line 333, ../../app/styles/sass/screen.scss */
+.throbber div.bar10 {
+  -webkit-transform: rotate(270deg) translate(0, -142%);
+  -moz-transform: rotate(270deg) translate(0, -142%);
+  -ms-transform: rotate(270deg) translate(0, -142%);
+  -o-transform: rotate(270deg) translate(0, -142%);
+  transform: rotate(270deg) translate(0, -142%);
+  -webkit-animation-delay: -0.25s;
+  -moz-animation-delay: -0.25s;
+  -ms-animation-delay: -0.25s;
+  -o-animation-delay: -0.25s;
+  animation-delay: -0.25s;
+}
+
+/* line 334, ../../app/styles/sass/screen.scss */
+.throbber div.bar11 {
+  -webkit-transform: rotate(300deg) translate(0, -142%);
+  -moz-transform: rotate(300deg) translate(0, -142%);
+  -ms-transform: rotate(300deg) translate(0, -142%);
+  -o-transform: rotate(300deg) translate(0, -142%);
+  transform: rotate(300deg) translate(0, -142%);
+  -webkit-animation-delay: -0.1667s;
+  -moz-animation-delay: -0.1667s;
+  -ms-animation-delay: -0.1667s;
+  -o-animation-delay: -0.1667s;
+  animation-delay: -0.1667s;
+}
+
+/* line 335, ../../app/styles/sass/screen.scss */
+.throbber div.bar12 {
+  -webkit-transform: rotate(330deg) translate(0, -142%);
+  -moz-transform: rotate(330deg) translate(0, -142%);
+  -ms-transform: rotate(330deg) translate(0, -142%);
+  -o-transform: rotate(330deg) translate(0, -142%);
+  transform: rotate(330deg) translate(0, -142%);
+  -webkit-animation-delay: -0.0833s;
+  -moz-animation-delay: -0.0833s;
+  -ms-animation-delay: -0.0833s;
+  -o-animation-delay: -0.0833s;
+  animation-delay: -0.0833s;
+}
+
 @-moz-keyframes fade {
-  /* line 323, ../../app/styles/sass/screen.scss */
+  /* line 338, ../../app/styles/sass/screen.scss */
   from {
     opacity: 1;
   }
 
-  /* line 324, ../../app/styles/sass/screen.scss */
+  /* line 339, ../../app/styles/sass/screen.scss */
   to {
     opacity: 0.25;
   }
 }
 
 @-webkit-keyframes fade {
-  /* line 323, ../../app/styles/sass/screen.scss */
+  /* line 338, ../../app/styles/sass/screen.scss */
   from {
     opacity: 1;
   }
 
-  /* line 324, ../../app/styles/sass/screen.scss */
+  /* line 339, ../../app/styles/sass/screen.scss */
   to {
     opacity: 0.25;
   }
 }
 
 @-o-keyframes fade {
-  /* line 323, ../../app/styles/sass/screen.scss */
+  /* line 338, ../../app/styles/sass/screen.scss */
   from {
     opacity: 1;
   }
 
-  /* line 324, ../../app/styles/sass/screen.scss */
+  /* line 339, ../../app/styles/sass/screen.scss */
+  to {
+    opacity: 0.25;
+  }
+}
+
+@-ms-keyframes fade {
+  /* line 338, ../../app/styles/sass/screen.scss */
+  from {
+    opacity: 1;
+  }
+
+  /* line 339, ../../app/styles/sass/screen.scss */
   to {
     opacity: 0.25;
   }
 }
 
 @keyframes fade {
-  /* line 323, ../../app/styles/sass/screen.scss */
+  /* line 338, ../../app/styles/sass/screen.scss */
   from {
     opacity: 1;
   }
 
-  /* line 324, ../../app/styles/sass/screen.scss */
+  /* line 339, ../../app/styles/sass/screen.scss */
   to {
     opacity: 0.25;
   }
 }
 
-/* line 326, ../../app/styles/sass/screen.scss */
+/* line 341, ../../app/styles/sass/screen.scss */
 .alert-message {
   background: #EBFFE7;
   border: 3px solid #27940B;
