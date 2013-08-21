@@ -6,8 +6,6 @@ class exports.PostsView extends Backbone.View
   id: 'posts'
 
   initialize: ->
-    @debouncedCachePostPositions = _.debounce (=> @cachePostPositions()), 500
-    @listenTo @collection, 'reset add remove', @debouncedCachePostPositions
     @listenTo @collection, 'reset', @render
     @listenTo @collection, 'add', @addOne
     @listenTo @collection, 'loading-posts', @showLoading
@@ -46,7 +44,6 @@ class exports.PostsView extends Backbone.View
     # Time to initial render.
     _.defer =>
       console.log "rendering postsView", (new Date().getTime() - performance.timing.navigationStart) / 1000
-      @debouncedCachePostPositions()
 
     @
 
@@ -64,9 +61,11 @@ class exports.PostsView extends Backbone.View
     @$('.js-top-loading').hide()
 
   addAll: ->
-    for post in @collection.models
+    for post in @collection.getPosts()
       @addOne post
 
+  # TODO make this function smarter about order i.e. it knows index of post
+  # so render post in that place within its views.
   addOne: (post) =>
     postView = new PostView model: post
     postView.render()
@@ -75,21 +74,15 @@ class exports.PostsView extends Backbone.View
   onClose: ->
     app.eventBus.trigger 'postsView:active', false
 
-  cachePostPositions: ->
-    @postPositions = []
-    for post in @$('.post')
-      @postPositions.push $(post).offset().top
-
+  # Scroll to the next post.
   scrollNext: ->
-    curPosition = $(window).scrollTop() + 81
-    nextY = _.find @postPositions, (y) -> curPosition < y
+    nextY = @collection.posNext()
     unless _.isUndefined nextY
       window.scrollTo(0, nextY - 80) # 42 px for the header + 36 px for two lines.
 
+  # Scroll to the previous post.
   scrollPrevious: ->
-    curPosition = $(window).scrollTop() + 79
-    copyPostPostions = @postPositions.slice(0).reverse()
-    prevY = _.find copyPostPostions, (y) -> curPosition > y
+    prevY = @collection.posPrev()
     unless _.isUndefined prevY
       window.scrollTo(0, prevY - 80) # 42 px for the header + 36 px for two lines.
 

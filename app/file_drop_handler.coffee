@@ -4,14 +4,17 @@ $('body').on 'drop', (e) ->
   e.preventDefault()
   e = e.originalEvent
 
-  # Check if we're on a post editing page, otherwise ignore.
-  console.log $('.body textarea').length
+  # If we're offline, ignore.
+  unless app.state.isOnline() then return
+
+  # Make sure we're on a post editing page, otherwise ignore the files.
   if $('.body textarea').length > 0
     files = e.dataTransfer.files
     for file in files
       createAttachment(file)
 
 createAttachment = (file) ->
+  # TODO use the email address here.
   uid  = ['kylemathews', (new Date).getTime(), 'raw'].join('-');
   console.log uid
 

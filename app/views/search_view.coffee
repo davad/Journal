@@ -5,9 +5,12 @@ module.exports = class SearchView extends Backbone.View
   id: 'search-page'
 
   initialize: ->
-    @listenTo @collection, 'reset', @renderResults
+    @listenTo @collection, 'search:complete', @renderResults
     @listenTo @collection, 'search:started', @showThrobber
     @listenTo @collection, 'search:complete', @hideThrobber
+    # Track where on search page the user has scrolled.
+    @listenTo app.eventBus, 'distance:scrollTop', (scrollTop) =>
+      @collection.scrollTop = scrollTop
 
   events:
     'click button': 'search'
@@ -20,6 +23,8 @@ module.exports = class SearchView extends Backbone.View
     _.defer =>
       @$('input').val(@collection.query_str)
       @$('input').focus()
+      if @collection.scrollTop?
+        $(window).scrollTop(@collection.scrollTop)
     @
 
   renderResults: ->
@@ -39,6 +44,12 @@ module.exports = class SearchView extends Backbone.View
     else if @collection.total is 0
       @$('#search-results').html '<h4>No matches</h4>'
       @$('.js-loading').hide()
+    else
+      # By default show most common queries.
+      if @collection.queries?
+        @$('#search-results').append "<h3>Common queries</h3><ul class='common-queries'>"
+        for query in @collection.queries
+          @$('#search-results ul').append "<li><a href='/search/#{ query }'>#{ query }</a></li>"
     @
 
   search: ->
@@ -47,7 +58,7 @@ module.exports = class SearchView extends Backbone.View
       @collection.query(query)
       app.router.navigate('/search/' + encodeURIComponent(query))
 
-  # Show throbber to show activity during long queries.
+  # Show throbber to indicate activity during long queries.
   showThrobber: ->
     @$('.js-loading').css('display', 'inline-block')
 

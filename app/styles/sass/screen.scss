@@ -68,6 +68,18 @@ html {
   }
 }
 
+.offline-status {
+  background: rgba(255, 255, 163, 0.7);
+  display: none;
+  height: 3em;
+  line-height: 3em;
+  position: fixed;
+  text-align: center;
+  top: 3em;
+  width: 100%;
+  z-index: 10;
+}
+
 // Main content wrapper.
 #wrapper {
   position: relative;
@@ -77,12 +89,6 @@ html {
 #posts {
   position: relative;
 
-  // Can't get button at top of the page to behave.
-  @media only screen and (max-width: 1050px) {
-    h1:first-child {
-      margin-top: 47px;
-    }
-  }
   .throbber.global-loading {
     position: absolute;
     right: 0;
@@ -139,7 +145,7 @@ input, textarea {
 
     width: 100%;
     .expandingText textarea {
-      @include adjust-font-size-to(36px);
+      @include adjust-font-size-to(24px);
       @extend %title-font;
 
       border: 0;
@@ -214,6 +220,8 @@ input[type="submit"], button, .button {
 }
 
 .post-action {
+  margin-bottom: rhythm(1);
+
   @media only screen and (min-width: 1050px) {
     position: absolute;
     top: 10px;
@@ -264,6 +272,10 @@ input[type="submit"], button, .button {
     display: none;
     margin-left: 1%;
   }
+}
+
+div.show, span.show {
+  display: block;
 }
 
 .error {
@@ -346,4 +358,15 @@ input[type="submit"], button, .button {
 
   padding: rhythm(1);
   position: absolute;
+}
+
+ul.common-queries {
+  @include leader(0.5);
+}
+
+.starred-posts-page {
+  h4 {
+    margin-left: rhythm(-1);
+    margin-bottom: rhythm(0.5, 16px);
+  }
 }

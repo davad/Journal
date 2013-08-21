@@ -2,8 +2,8 @@
 {PostView} = require 'views/post_view'
 {PostEditView} = require 'views/post_edit_view'
 Post = require 'models/post'
-Draft = require 'models/draft'
 DraftsView = require 'views/drafts_view'
+StarredView = require 'views/starred_view'
 SearchView = require 'views/search_view'
 
 class exports.MainRouter extends Backbone.Router
@@ -14,7 +14,7 @@ class exports.MainRouter extends Backbone.Router
     'posts/new': 'newPost'
     'node/:id/edit': 'editPost'
     'drafts': 'drafts'
-    'drafts/:id': 'editDraft'
+    'starred': 'starred'
     'search': 'search'
     'search/:query': 'search'
 
@@ -35,8 +35,7 @@ class exports.MainRouter extends Backbone.Router
     document.body.scrollTop = document.documentElement.scrollTop = 0
     newPost = new Post {}, collection: app.collections.posts
     newPost.set created: new Date().toISOString()
-    draftModel = new Draft {}, collection: app.collections.drafts
-    postEditView = new PostEditView model: newPost, draftModel: draftModel, focusTitle: focusTitle
+    postEditView = new PostEditView model: newPost, focusTitle: focusTitle, newPost: true
     app.views.main.show(postEditView)
 
   editPost: (id) ->
@@ -47,22 +46,20 @@ class exports.MainRouter extends Backbone.Router
     app.views.main.show(postEditView)
 
   drafts: ->
-    draftsView = new DraftsView collection: app.collections.drafts
+    # Scroll to top of page.
+    document.body.scrollTop = document.documentElement.scrollTop = 0
+
+    draftsView = new DraftsView collection: app.collections.posts
     app.views.main.show(draftsView)
 
-  editDraft: (id) ->
-    draftModel = app.collections.drafts.get(id)
-    newPost = new Post
-    newPost.collection = app.collections.posts
-    newPost.set
-      title: draftModel.get('title')
-      body: draftModel.get('body')
-      created: draftModel.get('created')
-      changed: draftModel.get('changed')
-    postEditView = new PostEditView model: newPost, draftModel: draftModel
-    app.views.main.show(postEditView)
+  starred: ->
+    # Scroll to top of page.
+    document.body.scrollTop = document.documentElement.scrollTop = 0
 
-  search: (query = "") ->
+    starredView = new StarredView collection: app.collections.starred
+    app.views.main.show(starredView)
+
+  search: (query = "", reset = false) ->
     searchView = new SearchView collection: app.collections.search
     app.views.main.show(searchView)
 

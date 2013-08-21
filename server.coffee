@@ -4,6 +4,7 @@ express = require 'express'
 mongoose = require 'mongoose'
 passport = require 'passport'
 RedisStore = require('connect-redis')(express)
+redis = require 'redis'
 require './post_schema'
 require './user_schema'
 async = require 'async'
@@ -25,6 +26,9 @@ sessionStore = new RedisStore({
   pass: config.redis_url.auth.split(':')[1]
 })
 
+# Setup redis client
+rclient = redis.createClient()
+
 # Setup Express middleware.
 app.configure ->
   app.set 'views', __dirname + '/views'
@@ -41,22 +45,6 @@ app.configure ->
   app.use app.router
   app.use express.static 'public'
 
-# Synchronize models with Elastic Search.
-Post = mongoose.model 'post'
-stream = Post.synchronize()
-count = 0
-
-stream.on('data', (err, doc) ->
-  count++
-)
-stream.on('close', ->
-  console.log('indexed ' + count + ' documents!')
-)
-stream.on('error', (err) ->
-  console.log(err)
-  return
-)
-
 # Routes.
 app.get '/', (req, res) ->
   if req.isAuthenticated()
@@ -67,6 +55,14 @@ app.get '/', (req, res) ->
       res.render 'index'
   else
     res.redirect '/login'
+
+# Simple ping route so client can detect if it's online or not.
+app.get '/ping', (req, res) ->
+  if req.isAuthenticated()
+    res.send(200)
+  else
+    res.send(403)
+
 app.get '/node/:nid', (req, res) ->
   if req.isAuthenticated()
     if req.headers.accept? and req.headers.accept.indexOf('text/html') isnt -1
@@ -141,29 +137,39 @@ findByNid = (nid, res, req) ->
       res.json 'found nothing'
 
 app.get '/posts', (req, res) ->
-  Post = mongoose.model 'post'
-  created = if req.query.created? then req.query.created else new Date()
-  if req.query.changed
-    recentPostChanges(req, res)
-  else if req.query.id
-    findById(req.query.id, res, req)
-  else if req.query.nid
-    findByNid(req.query.nid, res, req)
+  unless req.isAuthenticated()
+    res.send(401)
   else
-    Post.find()
-      .limit(10)
-      .where('created').lt(created)
-      .notEqualTo('deleted', true)
-      .where( '_user', req?.user._id.toString())
-      .desc('created')
-      .run (err, posts) ->
-        console.log 'query done'
-        unless err or not posts?
-          for post in posts
-            post.setValue('id', post.getValue('_id'))
-          res.json posts
-        else
-          res.json ''
+    Post = mongoose.model 'post'
+    created = if req.query.created? then req.query.created else new Date()
+    # If user wants only posts changed after a certain date.
+    if req.query.changed
+      recentPostChanges(req, res)
+    # If the user only wants draft posts.
+    else if req.query.draft
+      postDrafts(req, res)
+    else if req.query.starred
+      starredPosts(req, res)
+    else if req.query.id
+      findById(req.query.id, res, req)
+    else if req.query.nid
+      findByNid(req.query.nid, res, req)
+    else
+      Post.find()
+        .limit(10)
+        .where('created').lt(created)
+        .notEqualTo('deleted', true)
+        .notEqualTo('draft', true)
+        .where( '_user', req?.user._id.toString())
+        .desc('created')
+        .run (err, posts) ->
+          console.log 'query done'
+          unless err or not posts?
+            for post in posts
+              post.setValue('id', post.getValue('_id'))
+            res.json posts
+          else
+            res.json ''
 
 recentPostChanges = (req, res) ->
   Post = mongoose.model 'post'
@@ -177,6 +183,38 @@ recentPostChanges = (req, res) ->
     .desc('created')
     .run (err, posts) ->
       console.log 'posts changed query done'
+      unless err or not posts?
+        for post in posts
+          post.setValue('id', post.getValue('_id'))
+        res.json posts
+      else
+        res.json ''
+
+postDrafts = (req, res) ->
+  Post = mongoose.model 'post'
+  Post.find()
+    .notEqualTo('deleted', true)
+    .where('draft', true)
+    .where( '_user', req?.user._id.toString())
+    .desc('created')
+    .run (err, posts) ->
+      console.log 'drafts query done'
+      unless err or not posts?
+        for post in posts
+          post.setValue('id', post.getValue('_id'))
+        res.json posts
+      else
+        res.json ''
+
+starredPosts = (req, res) ->
+  Post = mongoose.model 'post'
+  Post.find()
+    .notEqualTo('deleted', true)
+    .where('starred', true)
+    .where( '_user', req?.user._id.toString())
+    .desc('created')
+    .run (err, posts) ->
+      console.log 'starred query done'
       unless err or not posts?
         for post in posts
           post.setValue('id', post.getValue('_id'))
@@ -274,12 +312,14 @@ app.post '/posts', (req, res) ->
 
       unless post.created?
         post.created = new Date()
-      post.changed = post.created
+      unless post.changed?
+        post.changed = post.created
       post.save (err) ->
-        unless err
+        unless err?
           res.json id: post._id, created: post.created, nid: post.nid
         else
           console.error 'Error creating new post', err
+          res.json(500, err)
 
 app.put '/posts/:id', (req, res) ->
   console.log 'updating an post'
@@ -293,16 +333,29 @@ app.put '/posts/:id', (req, res) ->
       post.save (err) ->
         if err
           console.error err
-          res.json 400, error: "The post wasn't saved correctly"
+          res.json 500, error: "The post wasn't saved correctly"
         res.json {
           saved: true
           changed: post.changed
         }
     else
-      console.error 'update error', err
+      console.log 'update error', err
 
 app.del '/posts/:id', (req, res) ->
-  res.send 'hello world'
+  Post = mongoose.model 'post'
+  Post.findById req.params.id, (err, post) ->
+    unless err or not post? or post._user.toString() isnt req.user._id.toString()
+      post.changed = new Date()
+      post.deleted = true
+      post.save (err) ->
+        if err
+          console.error err
+          res.json 500, error: "The post wasn't saved correctly"
+        res.json {
+          deleted: true
+        }
+    else
+      console.log 'update error', err
 
 app.get '/drafts', (req, res) ->
   if req.isAuthenticated()
@@ -347,6 +400,7 @@ app.post '/drafts', (req, res) ->
       res.json id: draft._id, created: draft.created, changed: draft.changed
     else
       console.error 'error', err
+      res.json 500, err
 
 app.put '/drafts/:id', (req, res) ->
   console.log 'updating a draft'
@@ -368,7 +422,7 @@ app.del '/drafts/:id', (req, res) ->
   Draft = mongoose.model 'draft'
   Draft.findById req.params.id, (err, draft) ->
     unless err or not draft? or draft._user.toString() isnt req.user._id.toString()
-      console.error draft
+      console.log draft
       draft.remove()
       res.send 'draft successfully deleted'
 
@@ -379,6 +433,38 @@ app.get '/search', (req, res) ->
       res.render 'index'
   else
     res.redirect '/login'
+
+recordQuery = (query, user) ->
+  key = "query_#{ user }_#{ (Math.random() * 10000).toString().split('.')[0] }"
+  rclient.set key, query
+  # expire query data after one month.
+  rclient.expire key, 2592000
+
+app.get '/search/queries', (req, res) ->
+  if req.isAuthenticated()
+    if req.headers.accept? and req.headers.accept.indexOf('text/html') isnt -1
+      res.render 'index'
+    else
+      # Fetch all queries stored by this person.
+      rclient.keys("query_#{ req.user._id.toString() }_*", (err, keys) ->
+        rclient.mget keys, (err, values) ->
+          # Group common queries together and sort by count.
+          processed = []
+          for value in values
+            processed.push value.trim()
+          results = _.groupBy(processed)
+          set = []
+          for query, number of results
+            obj = {}
+            obj[query] = number.length
+            set.push(obj)
+          set = _.sortBy set, (query) -> return _.values(query)[0]
+          sortedSet = []
+          for query in set
+            sortedSet.push _.keys(query)[0]
+          sortedSet = sortedSet.reverse()
+          res.json sortedSet
+      )
 
 app.get '/search/:query', (req, res) ->
   if req.isAuthenticated()
@@ -397,9 +483,11 @@ app.get '/search/:query', (req, res) ->
             use_dis_max: true
             fuzzy_prefix_length : 3
         filter:
-          #and: [
-            term:
-              _user: req.user._id.toString()
+          and: [
+            {
+              term:
+                _user: req.user._id.toString()
+            }
             #,
             #{
             #range:
@@ -407,7 +495,13 @@ app.get '/search/:query', (req, res) ->
                 #from: 1262304000000
                 #to: 1293840000000
             #}
-            #]
+            ,
+            {
+              term:
+                deleted: false
+                draft: false
+            }
+          ]
         facets:
           year:
             date_histogram:
@@ -422,8 +516,14 @@ app.get '/search/:query', (req, res) ->
             title: {"fragment_size" : 300}
             body: {"fragment_size" : 200}
       }, (err, posts) ->
-        if err then console.error err
-        res.json posts
+        if err
+          console.error err
+          res.json 500, err
+        else
+          res.json posts
+          # Record the query if there's a result.
+          if posts?.hits.total > 0 and not err
+            recordQuery(req.params.query, req.user._id.toString())
       )
   else
     res.redirect '/login'
