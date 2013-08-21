@@ -121,6 +121,12 @@ window.require.register("backbone_extensions", function(exports, require, module
     this.children.push(childView);
     return childView;
   };
+
+  Backbone.Model.prototype.saveLocal = function() {
+    if (this.collection.burry != null) {
+      return this.collection.burry.set(this.get('nid'), this.toJSON());
+    }
+  };
   
 });
 window.require.register("collections/drafts", function(exports, require, module) {
@@ -142,6 +148,29 @@ window.require.register("collections/drafts", function(exports, require, module)
 
     Drafts.prototype.model = Draft;
 
+    Drafts.prototype.initialize = function() {
+      var _this = this;
+
+      return this.on('sync', function() {
+        var draft, _i, _len, _ref1, _results;
+
+        _ref1 = _this.models;
+        _results = [];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          draft = _ref1[_i];
+          app.collections.posts.create({
+            title: draft.get('title'),
+            body: draft.get('body'),
+            created: draft.get('created'),
+            changed: draft.get('changed'),
+            draft: true
+          });
+          _results.push(draft.destroy());
+        }
+        return _results;
+      });
+    };
+
     Drafts.prototype.comparator = function(model, model2) {
       if (model.get('created') === model2.get('created')) {
         return 0;
@@ -160,6 +189,7 @@ window.require.register("collections/drafts", function(exports, require, module)
 });
 window.require.register("collections/posts", function(exports, require, module) {
   var Post, _ref,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -169,7 +199,7 @@ window.require.register("collections/posts", function(exports, require, module) 
     __extends(Posts, _super);
 
     function Posts() {
-      _ref = Posts.__super__.constructor.apply(this, arguments);
+      this.fetchErrorHandler = __bind(this.fetchErrorHandler, this);    _ref = Posts.__super__.constructor.apply(this, arguments);
       return _ref;
     }
 
@@ -180,26 +210,43 @@ window.require.register("collections/posts", function(exports, require, module) 
     Posts.prototype.initialize = function() {
       var _this = this;
 
+      this.currentScrollModel = 0;
       this.lastPost = "";
       this.timesLoaded = 0;
       this.loading(false);
-      this.on('set_cache_ids', this.setCacheIds);
       this.postsViewActive = false;
       this.setMaxNewPostFromCollection = function() {
         return _this.maxNew = _this.max(function(post) {
           return moment(post.get('created')).unix();
         });
       };
+      this.on('add remove', function(model) {
+        this.setCacheIds();
+        return this.burry.remove(model.get('nid'));
+      });
       this.burry = new Burry.Store('posts', 30240);
       if (this.burry.get('__ids__') != null) {
         this.loadFromCache();
       }
-      return app.eventBus.on('visibilitychange', function(state) {
+      app.eventBus.on('visibilitychange', function(state) {
         if (state === "visible") {
           if (moment().diff(moment(_this.lastFetch), 'minutes') > 15) {
             return _this.loadChangesSinceLastFetch();
           }
         }
+      });
+      return this.fetchDrafts();
+    };
+
+    Posts.prototype.getPosts = function() {
+      return this.filter(function(post) {
+        return post.get('draft') === false;
+      });
+    };
+
+    Posts.prototype.getDrafts = function() {
+      return this.filter(function(post) {
+        return post.get('draft') === true;
       });
     };
 
@@ -232,9 +279,21 @@ window.require.register("collections/posts", function(exports, require, module) 
       }
     };
 
+    Posts.prototype.fetchErrorHandler = function(models, xhr) {
+      this.loading(false);
+      if (xhr.status === 0) {
+        return app.state.set('online', false);
+      } else if (xhr.status === 401) {
+        return window.location = "/login";
+      }
+    };
+
     Posts.prototype.loadChangesSinceLastFetch = function() {
       var _this = this;
 
+      if (!app.state.isOnline()) {
+        return;
+      }
       return this.fetch({
         update: true,
         remove: false,
@@ -242,6 +301,7 @@ window.require.register("collections/posts", function(exports, require, module) 
           changed: this.lastFetch,
           oldest: this.lastPost
         },
+        error: this.fetchErrorHandler,
         success: function(collection, response, options) {
           _this.lastFetch = new Date().toJSON();
           return _this.resetCollection(response);
@@ -255,6 +315,9 @@ window.require.register("collections/posts", function(exports, require, module) 
 
       if (override == null) {
         override = false;
+      }
+      if (!app.state.isOnline()) {
+        return;
       }
       if (this.loadedAllThePosts) {
         return;
@@ -278,8 +341,9 @@ window.require.register("collections/posts", function(exports, require, module) 
           data: {
             created: created
           },
+          error: this.fetchErrorHandler,
           success: function(collection, response, options) {
-            var post, _i, _len, _ref1;
+            var post, _i, _len, _ref1, _ref2;
 
             _this.lastFetch = new Date().toJSON();
             if (_.isString(response)) {
@@ -296,7 +360,13 @@ window.require.register("collections/posts", function(exports, require, module) 
             _ref1 = _this.models;
             for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
               post = _ref1[_i];
-              _this.cachePost(post);
+              if (((_ref2 = _this.burry.get(post.get('nid'))) != null ? _ref2.changed : void 0) > post.get('changed')) {
+                console.log(_this.burry.get(post.get('nid')));
+                console.log(post.toJSON());
+                _this.get(post.id).set(_this.burry.get(post.get('nid')));
+              } else {
+                _this.cachePost(post);
+              }
             }
             _.defer(function() {
               return _this.setCacheIds();
@@ -325,7 +395,7 @@ window.require.register("collections/posts", function(exports, require, module) 
     Posts.prototype.setCacheIds = function() {
       var nids, post, posts;
 
-      posts = this.first(10);
+      posts = this.getPosts().slice(0, 10);
       nids = (function() {
         var _i, _len, _results;
 
@@ -350,6 +420,9 @@ window.require.register("collections/posts", function(exports, require, module) 
       posts = [];
       for (_i = 0, _len = postsIds.length; _i < _len; _i++) {
         nid = postsIds[_i];
+        if (nid === null) {
+          continue;
+        }
         post = this.loadNidFromCache(nid);
         if (post != null) {
           posts.push(post);
@@ -361,6 +434,42 @@ window.require.register("collections/posts", function(exports, require, module) 
 
     Posts.prototype.loadNidFromCache = function(nid) {
       return this.burry.get(nid);
+    };
+
+    Posts.prototype.posNext = function() {
+      var model;
+
+      model = this.at(this.currentScrollModel + 1);
+      if (model != null) {
+        this.currentScrollModel = this.currentScrollModel + 1;
+        return model.position();
+      } else {
+        return void 0;
+      }
+    };
+
+    Posts.prototype.posPrev = function() {
+      var model;
+
+      model = this.at(this.currentScrollModel - 1);
+      if (model != null) {
+        this.currentScrollModel = this.currentScrollModel - 1;
+        return model.position();
+      } else {
+        return void 0;
+      }
+    };
+
+    Posts.prototype.fetchDrafts = function() {
+      var _this = this;
+
+      if (!app.state.isOnline()) {
+        return;
+      }
+      return $.getJSON('/posts?draft=true', function(drafts) {
+        _this.add(drafts);
+        return _this.trigger('sync:drafts');
+      });
     };
 
     return Posts;
@@ -393,8 +502,8 @@ window.require.register("collections/posts_cache", function(exports, require, mo
         return this.find(function(post) {
           return post.get('nid') === nid;
         });
-      } else if (app.collections.posts.burry.get("posts_pid_" + nid) != null) {
-        json = app.collections.posts.burry.get("posts_pid_" + nid);
+      } else if (app.collections.posts.burry.get(nid) != null) {
+        json = app.collections.posts.burry.get(nid);
         post = new Post(json);
         post.fetch();
         this.add(post);
@@ -440,6 +549,23 @@ window.require.register("collections/search", function(exports, require, module)
 
     Search.prototype.model = Result;
 
+    Search.prototype.initialize = function() {
+      var _this = this;
+
+      this.fetchCommonQueries();
+      return this.on('search:complete', function() {
+        return _this.fetchCommonQueries();
+      });
+    };
+
+    Search.prototype.fetchCommonQueries = function() {
+      var _this = this;
+
+      return $.getJSON('/search/queries', function(data) {
+        return _this.queries = data;
+      });
+    };
+
     Search.prototype.query = function(query) {
       var start,
         _this = this;
@@ -450,10 +576,27 @@ window.require.register("collections/search", function(exports, require, module)
         start = new Date();
         this.reset();
         return app.util.search(query, function(results) {
+          var entry, year, _i, _j, _len, _len1, _ref1, _ref2;
+
+          _this.results = results;
           _this.searchtime = new Date() - start;
           _this.total = results.hits.total;
           _this.max_score = results.hits.max_score;
           _this.reset(results.hits.hits);
+          console.log(results.facets);
+          _ref1 = results.facets.year.entries;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            entry = _ref1[_i];
+            year = moment.utc(entry.time).year();
+            console.log(year + ": " + entry.count);
+            console.log('');
+          }
+          _ref2 = results.facets.month.entries;
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            entry = _ref2[_j];
+            year = moment.utc(entry.time).format('MMMM YYYY');
+            console.log(year + ": " + entry.count);
+          }
           return _this.trigger('search:complete');
         });
       } else {
@@ -462,14 +605,71 @@ window.require.register("collections/search", function(exports, require, module)
     };
 
     Search.prototype.clear = function() {
+      this.results = null;
       this.searchtime = null;
       this.max_score = null;
       this.total = null;
       this.query_str = null;
+      this.scrollTop = null;
       return this.reset();
     };
 
     return Search;
+
+  })(Backbone.Collection);
+  
+});
+window.require.register("collections/starred", function(exports, require, module) {
+  var Starred, _ref,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  module.exports = Starred = (function(_super) {
+    __extends(Starred, _super);
+
+    function Starred() {
+      this.maintainStarred = __bind(this.maintainStarred, this);    _ref = Starred.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    Starred.prototype.initialize = function() {
+      this.fetch();
+      app.collections.posts.on('change:starred', this.maintainStarred);
+      return app.collections.postsCache.on('change:starred', this.maintainStarred);
+    };
+
+    Starred.prototype.maintainStarred = function(model, starred) {
+      if (starred) {
+        return this.add(model, {
+          merge: true
+        });
+      } else {
+        return this.remove(model);
+      }
+    };
+
+    Starred.prototype.fetch = function() {
+      var _this = this;
+
+      return $.getJSON('/posts?starred=true', function(posts) {
+        _this.reset(posts);
+        return _this.trigger('sync');
+      });
+    };
+
+    Starred.prototype.comparator = function(model, model2) {
+      if (model.get('created') === model2.get('created')) {
+        return 0;
+      }
+      if (model.get('created') < model2.get('created')) {
+        return 1;
+      } else {
+        return -1;
+      }
+    };
+
+    return Starred;
 
   })(Backbone.Collection);
   
@@ -484,7 +684,9 @@ window.require.register("file_drop_handler", function(exports, require, module) 
 
     e.preventDefault();
     e = e.originalEvent;
-    console.log($('.body textarea').length);
+    if (!app.state.isOnline()) {
+      return;
+    }
     if ($('.body textarea').length > 0) {
       files = e.dataTransfer.files;
       _results = [];
@@ -637,17 +839,13 @@ window.require.register("helpers", function(exports, require, module) {
   };
 
   exports.scrollPosition = function() {
-    var currentPosition, throttled;
-
-    currentPosition = function() {
+    return app.eventBus.on('distance:scrollTop', function() {
       if (window.location.pathname === '/') {
         return app.site.set({
           postsScroll: $(window).scrollTop()
         });
       }
-    };
-    throttled = _.throttle(currentPosition, 500);
-    return $(window).scroll(throttled);
+    });
   };
 
   exports.search = function(query, callback) {
@@ -662,7 +860,8 @@ window.require.register("helpers", function(exports, require, module) {
     var reportNearBottom, throttled;
 
     reportNearBottom = function() {
-      return app.eventBus.trigger('distance:bottom_page', ($(document).height() - $(window).height()) - $(window).scrollTop());
+      app.eventBus.trigger('distance:bottom_page', ($(document).height() - $(window).height()) - $(window).scrollTop());
+      return app.eventBus.trigger('distance:scrollTop', $(window).scrollTop());
     };
     throttled = _.throttle(reportNearBottom, 200);
     return $(window).scroll(throttled);
@@ -681,8 +880,301 @@ window.require.register("helpers", function(exports, require, module) {
   };
   
 });
+window.require.register("includes/offline_backbone_sync", function(exports, require, module) {
+  var burry, getKeyByNid, methodMap, saveOfflineChanges;
+
+  methodMap = {
+    'create': 'POST',
+    'update': 'PUT',
+    'patch': 'PATCH',
+    'delete': 'DELETE',
+    'read': 'GET'
+  };
+
+  window.offline_changes = burry = new Burry.Store('offline_changes');
+
+  Backbone.sync = function(method, model, options) {
+    var error, params, success, type, xhr, _ref;
+
+    if (options == null) {
+      options = {};
+    }
+    type = methodMap[method];
+    params = {
+      type: type,
+      dataType: 'json'
+    };
+    if (!options.url) {
+      params.url = _.result(model, 'url') || urlError();
+    }
+    if ((options.data == null) && model && (method === 'create' || method === 'update' || method === 'patch')) {
+      params.contentType = 'application/json';
+      params.data = JSON.stringify(options.attrs || model.toJSON(options));
+    }
+    if (params.type !== 'GET') {
+      params.processData = false;
+    }
+    success = options.success;
+    options.success = function(resp) {
+      app.state.set('online', true);
+      if (success) {
+        success(model, resp, options);
+      }
+      return model.trigger('sync', model, resp, options);
+    };
+    error = options.error;
+    options.error = function(xhr) {
+      if (xhr.status === 0) {
+        saveOfflineChanges(model, _.extend(params, options));
+        app.state.set('online', false);
+      } else if (xhr.status === 401) {
+        window.location = "/login";
+      }
+      if (error) {
+        error(model, xhr, options);
+      }
+      return model.trigger('error', model, xhr, options);
+    };
+    if (app.state.isOnline()) {
+      if ((_ref = params.type) === 'POST' || _ref === 'PUT' || _ref === 'PATCH') {
+        this.saveLocal();
+      }
+      xhr = options.xhr = Backbone.ajax(_.extend(params, options));
+      model.trigger('request', model, xhr, options);
+      return xhr;
+    } else {
+      saveOfflineChanges(model, _.extend(params, options));
+      if (success) {
+        success(model, {
+          status: 200
+        }, options);
+      }
+      return model.trigger('sync', model, {
+        status: 200
+      }, options);
+    }
+  };
+
+  getKeyByNid = function(nid) {
+    return _.find(burry.keys(), function(key) {
+      return key.split("::")[1] === String(nid);
+    });
+  };
+
+  saveOfflineChanges = function(model, options) {
+    var key, newOperation, oldOperation;
+
+    if (options.type === "GET") {
+      return;
+    }
+    if (model.constructor.name !== 'Post') {
+      return;
+    }
+    if (model.get('created') == null) {
+      model.set('created', new Date().toJSON());
+    }
+    model.set('changed', new Date().toJSON());
+    if (!model.id) {
+      model.id = "OFFLINE_" + (Math.round(Math.random() * 10000000000));
+    }
+    if (!model.get('nid')) {
+      model.set('nid', Math.round(Math.random() * 10000000000) + 1000000);
+    }
+    key = getKeyByNid(model.get('nid'));
+    if (key != null) {
+      oldOperation = key.split("::")[0];
+      newOperation = options.type;
+      console.log(newOperation, oldOperation);
+      if (newOperation === "DELETE" && oldOperation === "POST") {
+        return burry.remove(key);
+      }
+      if (newOperation === "DELETE" && oldOperation === "PUT") {
+        burry.remove(key);
+        key = "DELETE::" + (model.get('nid'));
+      }
+    } else {
+      key = "" + options.type + "::" + (model.get('nid'));
+    }
+    return burry.set(key, model.toJSON());
+  };
+
+  app.state.on('change:online', function(model, online) {
+    if (online && burry.keys().length > 0) {
+      return replayChanges();
+    }
+  });
+
+  window.replayChanges = function() {
+    var key, model, operation, operations, promise, _i, _j, _len, _len1, _ref, _ref1, _results;
+
+    if (!app.state.isOnline()) {
+      return;
+    }
+    operations = [];
+    _ref = burry.keys();
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      key = _ref[_i];
+      model = burry.get(key);
+      model._operation = key.split('::')[0];
+      model._key = key;
+      operations.push(model);
+    }
+    _results = [];
+    for (_j = 0, _len1 = operations.length; _j < _len1; _j++) {
+      model = operations[_j];
+      operation = model._operation;
+      key = model._key;
+      model._operation = null;
+      model._key = null;
+      switch (operation) {
+        case "POST":
+          app.collections.posts.burry.remove(key.split('::')[1]);
+          if (((_ref1 = app.models.editing) != null ? _ref1.get('nid') : void 0) === model.nid) {
+            app.models.editing.id = null;
+            app.models.editing.unset('nid');
+            promise = app.models.editing.save();
+            _results.push((function(key, promise) {
+              return promise.done(function() {
+                return burry.remove(key);
+              });
+            })(key, promise));
+          } else if (app.collections.posts.getByNid(model.nid) != null) {
+            model = app.collections.posts.getByNid(model.nid);
+            model.id = null;
+            model.unset('nid');
+            model.once('sync', function() {
+              return app.collections.posts.setCacheIds();
+            });
+            _results.push((function(key, model) {
+              promise = model.save();
+              return promise.done(function() {
+                return burry.remove(key);
+              });
+            })(key, model));
+          } else {
+            model.id = null;
+            model.nid = null;
+            _results.push((function(key, model) {
+              var newModel;
+
+              newModel = app.collections.posts.create(model);
+              return newModel.once('sync', function() {
+                return burry.remove(key);
+              });
+            })(key, model));
+          }
+          break;
+        case "PUT":
+          if (app.collections.posts.getByNid(model.nid) != null) {
+            _results.push((function(key, model) {
+              promise = app.collections.posts.getByNid(model.nid).set(model).save();
+              return promise.done(function() {
+                return burry.remove(key);
+              });
+            })(key, model));
+          } else {
+            _results.push((function(key, model) {
+              var realModel;
+
+              realModel = app.util.loadPostModel(model.nid, true);
+              promise = realModel.fetch();
+              return promise.done(function() {
+                promise = realModel.set(model).save();
+                return promise.done(function() {
+                  return burry.remove(key);
+                });
+              });
+            })(key, model));
+          }
+          break;
+        case "DELETE":
+          if (app.collections.posts.getByNid(model.nid) != null) {
+            _results.push(app.collections.posts.getByNid(model.nid).destroy());
+          } else {
+            _results.push((function(key, model) {
+              var realModel;
+
+              realModel = app.util.loadPostModel(model.nid, true);
+              return realModel.once('sync', function() {
+                if (realModel.destroy != null) {
+                  promise = realModel.destroy();
+                  return promise.done(function() {
+                    return burry.remove(key);
+                  });
+                }
+              });
+            })(key, model));
+          }
+          break;
+        default:
+          _results.push(void 0);
+      }
+    }
+    return _results;
+  };
+  
+});
+window.require.register("includes/online", function(exports, require, module) {
+  var Online,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  Online = (function() {
+    function Online() {
+      this.ping = __bind(this.ping, this);
+      var _this = this;
+
+      this.pingWait = 1000;
+      this.ping();
+      document.addEventListener('online', this.ping);
+      document.addEventListener('offline', this.ping);
+      app.state.on('change:online', function(model, online) {
+        if (!online) {
+          return _this.ping();
+        }
+      });
+      app.eventBus.on('visibilitychange', function(state) {
+        if (!app.state.isOnline()) {
+          if (state === "visible") {
+            return _this.ping();
+          } else {
+            return clearTimeout(_this.id);
+          }
+        }
+      });
+    }
+
+    Online.prototype.ping = function() {
+      var _this = this;
+
+      this.lastPing = new Date();
+      clearTimeout(this.id);
+      return $.ajax({
+        url: '/ping',
+        success: function(result) {
+          _this.pingWait = 1000;
+          return app.state.set('online', true);
+        },
+        error: function(result) {
+          app.state.set('online', false);
+          if (!(_this.pingWait >= 120000)) {
+            _this.pingWait = _this.pingWait * 1.5;
+          } else {
+            _this.pingWait = 120000;
+          }
+          return _this.id = setTimeout(_this.ping, _this.pingWait);
+        }
+      });
+    };
+
+    return Online;
+
+  })();
+
+  app.online = new Online();
+  
+});
 window.require.register("initialize", function(exports, require, module) {
-  var BrunchApplication, Drafts, MainRouter, MainView, MenuBarView, Posts, PostsCache, PostsView, Search, clickHandler, loadPostModel, scrollPosition, search, throbber, _ref, _ref1,
+  var BrunchApplication, Drafts, MainRouter, MainView, MenuBarView, OfflineStatusView, Posts, PostsCache, PostsView, Search, Starred, State, clickHandler, loadPostModel, scrollPosition, search, throbber, _ref, _ref1,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -700,9 +1192,15 @@ window.require.register("initialize", function(exports, require, module) {
 
   Drafts = require('collections/drafts');
 
+  Starred = require('collections/starred');
+
   MenuBarView = require('views/menu_bar_view');
 
+  OfflineStatusView = require('views/offline_status_view');
+
   Search = require('collections/search');
+
+  State = require('models/state');
 
   require('backbone_extensions');
 
@@ -722,11 +1220,17 @@ window.require.register("initialize", function(exports, require, module) {
       var postsView;
 
       _.mixin(_.str.exports());
+      this.eventBus = _.extend({}, Backbone.Events);
+      this.eventBus.on('all', function(eventName, args) {
+        return console.log('EBUS', eventName, args);
+      });
       this.collections = {};
+      this.models = {};
       this.views = {};
       this.util = {};
       this.templates = {};
       this.geolocation = require('geolocation');
+      this.state = new State();
       this.util.loadPostModel = loadPostModel;
       this.util.clickHandler = clickHandler;
       this.util.search = search;
@@ -736,15 +1240,18 @@ window.require.register("initialize", function(exports, require, module) {
       });
       this.site = new Backbone.Model;
       this.router = new MainRouter;
-      this.eventBus = _.extend({}, Backbone.Events);
       this.collections.posts = new Posts;
       this.collections.posts.load(true);
       this.collections.postsCache = new PostsCache;
+      this.collections.starred = new Starred;
       this.collections.drafts = new Drafts;
       this.collections.drafts.fetch();
       this.collections.search = new Search;
       new MenuBarView({
         el: $('#menu-bar')
+      });
+      new OfflineStatusView({
+        el: $('.offline-status')
       });
       this.views.main = new MainView({
         el: $('#container')
@@ -754,6 +1261,7 @@ window.require.register("initialize", function(exports, require, module) {
         el: $('#posts')
       });
       postsView.render();
+      FastClick.attach(document.body);
       scrollPosition();
       return $(window).on('click', app.util.clickHandler);
     };
@@ -767,7 +1275,9 @@ window.require.register("initialize", function(exports, require, module) {
   }
 
   _.defer(function() {
-    return require('keyboard_shortcuts');
+    require('keyboard_shortcuts');
+    require('includes/online');
+    return require('includes/offline_backbone_sync');
   });
   
 });
@@ -783,7 +1293,7 @@ window.require.register("keyboard_shortcuts", function(exports, require, module)
   });
 
   key('n', function() {
-    return app.router.newPost(true);
+    return app.router.navigate('posts/new', true);
   });
 
   $(document).on('keydown', 'textarea, input', function(e) {
@@ -893,6 +1403,7 @@ window.require.register("models/post", function(exports, require, module) {
     };
 
     Post.prototype.initialize = function() {
+      Post.__super__.initialize.call(this);
       return this.on('sync', function() {
         if ((this.get('body') != null) && (this.get('title') != null)) {
           this.renderThings(true);
@@ -946,6 +1457,14 @@ window.require.register("models/post", function(exports, require, module) {
       }
     };
 
+    Post.prototype.position = function() {
+      if (this.view) {
+        return this.view.$el.offset().top;
+      } else {
+        return void 0;
+      }
+    };
+
     return Post;
 
   })(Backbone.Model);
@@ -969,8 +1488,30 @@ window.require.register("models/result", function(exports, require, module) {
   })(Backbone.Model);
   
 });
+window.require.register("models/state", function(exports, require, module) {
+  var State, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  module.exports = State = (function(_super) {
+    __extends(State, _super);
+
+    function State() {
+      _ref = State.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    State.prototype.isOnline = function() {
+      return this.get('online') || _.isUndefined(this.get('online'));
+    };
+
+    return State;
+
+  })(Backbone.Model);
+  
+});
 window.require.register("routers/main_router", function(exports, require, module) {
-  var Draft, DraftsView, Post, PostEditView, PostView, PostsView, SearchView, _ref,
+  var DraftsView, Post, PostEditView, PostView, PostsView, SearchView, StarredView, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -982,9 +1523,9 @@ window.require.register("routers/main_router", function(exports, require, module
 
   Post = require('models/post');
 
-  Draft = require('models/draft');
-
   DraftsView = require('views/drafts_view');
+
+  StarredView = require('views/starred_view');
 
   SearchView = require('views/search_view');
 
@@ -1002,7 +1543,7 @@ window.require.register("routers/main_router", function(exports, require, module
       'posts/new': 'newPost',
       'node/:id/edit': 'editPost',
       'drafts': 'drafts',
-      'drafts/:id': 'editDraft',
+      'starred': 'starred',
       'search': 'search',
       'search/:query': 'search'
     };
@@ -1026,7 +1567,7 @@ window.require.register("routers/main_router", function(exports, require, module
     };
 
     MainRouter.prototype.newPost = function(focusTitle) {
-      var draftModel, newPost, postEditView;
+      var newPost, postEditView;
 
       if (focusTitle == null) {
         focusTitle = false;
@@ -1038,13 +1579,10 @@ window.require.register("routers/main_router", function(exports, require, module
       newPost.set({
         created: new Date().toISOString()
       });
-      draftModel = new Draft({}, {
-        collection: app.collections.drafts
-      });
       postEditView = new PostEditView({
         model: newPost,
-        draftModel: draftModel,
-        focusTitle: focusTitle
+        focusTitle: focusTitle,
+        newPost: true
       });
       return app.views.main.show(postEditView);
     };
@@ -1063,36 +1601,31 @@ window.require.register("routers/main_router", function(exports, require, module
     MainRouter.prototype.drafts = function() {
       var draftsView;
 
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
       draftsView = new DraftsView({
-        collection: app.collections.drafts
+        collection: app.collections.posts
       });
       return app.views.main.show(draftsView);
     };
 
-    MainRouter.prototype.editDraft = function(id) {
-      var draftModel, newPost, postEditView;
+    MainRouter.prototype.starred = function() {
+      var starredView;
 
-      draftModel = app.collections.drafts.get(id);
-      newPost = new Post;
-      newPost.collection = app.collections.posts;
-      newPost.set({
-        title: draftModel.get('title'),
-        body: draftModel.get('body'),
-        created: draftModel.get('created'),
-        changed: draftModel.get('changed')
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+      starredView = new StarredView({
+        collection: app.collections.starred
       });
-      postEditView = new PostEditView({
-        model: newPost,
-        draftModel: draftModel
-      });
-      return app.views.main.show(postEditView);
+      return app.views.main.show(starredView);
     };
 
-    MainRouter.prototype.search = function(query) {
+    MainRouter.prototype.search = function(query, reset) {
       var searchView;
 
       if (query == null) {
         query = "";
+      }
+      if (reset == null) {
+        reset = false;
       }
       searchView = new SearchView({
         collection: app.collections.search
@@ -1127,11 +1660,11 @@ window.require.register("views/drafts_view", function(exports, require, module) 
     DraftsView.prototype.className = "drafts-page";
 
     DraftsView.prototype.initialize = function() {
-      return this.listenTo(this.collection, 'reset', this.render);
+      return this.listenTo(this.collection, 'sync:drafts', this.render);
     };
 
     DraftsView.prototype.events = {
-      'click li': 'gotoDraftEditPage'
+      'click a': 'clickHandler'
     };
 
     DraftsView.prototype.render = function() {
@@ -1143,20 +1676,23 @@ window.require.register("views/drafts_view", function(exports, require, module) 
     DraftsView.prototype.addAll = function() {
       var draft, _i, _len, _ref1, _results;
 
-      _ref1 = this.collection.models;
+      _ref1 = this.collection.getDrafts();
       _results = [];
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         draft = _ref1[_i];
-        _results.push(this.$('ul').append("<li class='link link-color' data-draft-id='" + (draft.get('id')) + "'>" + (draft.get('title')) + " <em>" + (moment(draft.get('created')).fromNow()) + "</em></li>"));
+        _results.push(this.$('ul').append("<li class='link'><a href='node/" + (draft.get('nid')) + "/edit'>" + (draft.get('title')) + " <em>" + (moment(draft.get('created')).fromNow()) + "</em></a></li>"));
       }
       return _results;
     };
 
-    DraftsView.prototype.gotoDraftEditPage = function(e) {
-      var draftId;
+    DraftsView.prototype.clickHandler = function(e) {
+      var href;
 
-      draftId = $(e.target).closest('li').data('draft-id');
-      return app.router.navigate('drafts/' + draftId, true);
+      e.preventDefault();
+      href = $(e.currentTarget).attr('href');
+      return app.router.navigate(href, {
+        trigger: true
+      });
     };
 
     return DraftsView;
@@ -1205,8 +1741,9 @@ window.require.register("views/menu_bar_view", function(exports, require, module
     MenuBarView.prototype.initialize = function() {
       this.throttledScroll = _.throttle(this.scrollManagement, 25);
       if (Modernizr.touch) {
-        return $(window).on('scroll', this.throttledScroll);
+        $(window).on('scroll', this.throttledScroll);
       }
+      return this.listenTo(app.state, 'change:online', this.toggleOnlineStatus);
     };
 
     MenuBarView.prototype.events = {
@@ -1304,7 +1841,7 @@ window.require.register("views/menu_dropdown_view", function(exports, require, m
     };
 
     MenuDropdownView.prototype.render = function() {
-      this.$el.html("      <li data-link='drafts'>Drafts (" + app.collections.drafts.length + ")</li>      <li data-link='logout'>Logout</li>      ");
+      this.$el.html("      <li data-link='drafts'>Drafts (" + (app.collections.posts.getDrafts().length) + ")</li>      <li data-link='starred'>Starred</li>      <li data-link='logout'>Logout</li>      ");
       return this;
     };
 
@@ -1326,6 +1863,59 @@ window.require.register("views/menu_dropdown_view", function(exports, require, m
     };
 
     return MenuDropdownView;
+
+  })(Backbone.View);
+  
+});
+window.require.register("views/offline_status_view", function(exports, require, module) {
+  var OfflineStatusView, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  module.exports = OfflineStatusView = (function(_super) {
+    __extends(OfflineStatusView, _super);
+
+    function OfflineStatusView() {
+      _ref = OfflineStatusView.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    OfflineStatusView.prototype.initialize = function() {
+      this.listenTo(app.state, 'change:online', this.toggleOnlineStatus);
+      return this.render();
+    };
+
+    OfflineStatusView.prototype.render = function() {
+      this.$el.show().transition({
+        y: '-3em'
+      }, 0);
+      if ($(document).width() > 650) {
+        this.$el.html("App is offline. All changes made while offline will be saved to the server once you reconnect.");
+      } else {
+        this.$el.html("App is offline");
+      }
+      return this;
+    };
+
+    OfflineStatusView.prototype.toggleOnlineStatus = function(model, online) {
+      if (online) {
+        this.$el.transition({
+          y: '-3em'
+        });
+        return $('#wrapper').transition({
+          y: '0'
+        });
+      } else {
+        this.$el.transition({
+          y: 0
+        });
+        return $('#wrapper').transition({
+          y: '3em'
+        });
+      }
+    };
+
+    return OfflineStatusView;
 
   })(Backbone.View);
   
@@ -1353,7 +1943,8 @@ window.require.register("views/post_edit_view", function(exports, require, modul
     PostEditView.prototype.id = 'post-edit';
 
     PostEditView.prototype.initialize = function() {
-      return this.throttledAutoScroll = _.throttle(this._autoscroll, 250);
+      this.throttledAutoScroll = _.throttle(this._autoscroll, 250);
+      return app.models.editing = this.model;
     };
 
     PostEditView.prototype.events = {
@@ -1407,12 +1998,12 @@ window.require.register("views/post_edit_view", function(exports, require, modul
     };
 
     PostEditView.prototype._autoscroll = function(e) {
-      var cursorMax, cursorPosition, distanceTextareaToTop, distanceToBottomOfWindowFromTextarea, distanceToEnd, notInTitle, numCharactersTyped, textareaHeight;
+      var cursorMax, cursorPosition, distanceTextareaToTop, distanceToBottomOfWindowFromTextarea, distanceToEnd, notInTitle, numCharactersTyped, textareaHeight, _ref1;
 
       if (Modernizr.touch) {
         return;
       }
-      distanceTextareaToTop = $('.body textarea').offset().top;
+      distanceTextareaToTop = (_ref1 = $('.body textarea').offset()) != null ? _ref1.top : void 0;
       textareaHeight = this.$('.body textarea').height();
       distanceToBottomOfWindowFromTextarea = $(window).height() - textareaHeight - (distanceTextareaToTop - $(window).scrollTop());
       cursorPosition = this.$('.body textarea')[0].selectionStart;
@@ -1464,26 +2055,21 @@ window.require.register("views/post_edit_view", function(exports, require, modul
         obj.latitude = pos.latitude;
         obj.longitude = pos.longitude;
       }
+      this.model.set('draft', false);
       this.$('.js-loading').css('display', 'inline-block');
       return this.model.save(obj, {
-        success: this.modelSynced
+        success: this.modelSynced,
+        error: this.modelSynced
       });
     };
 
     PostEditView.prototype.modelSynced = function(model, response, options) {
-      var newPost;
-
-      if (this.options.draftModel != null) {
-        this.options.draftModel.destroy();
-        newPost = true;
-      }
       this.model.collection.add(this.model, {
         silent: true
       });
       app.collections.posts.trigger('reset');
-      app.collections.posts.burry.set(model.id, model.toJSON());
       app.collections.posts.setCacheIds();
-      if (!newPost) {
+      if (!this.options.newPost) {
         return window.history.back();
       } else {
         return app.router.navigate('/node/' + this.model.get('nid'), true);
@@ -1491,22 +2077,11 @@ window.require.register("views/post_edit_view", function(exports, require, modul
     };
 
     PostEditView.prototype["delete"] = function() {
-      var _this = this;
-
       app.collections.posts.remove(this.model);
       app.collections.posts.sort();
       app.collections.posts.trigger('reset');
       app.router.navigate('/', true);
-      if (this.options.draftModel != null) {
-        this.options.draftModel.destroy();
-      }
-      return this.model.save({
-        deleted: true
-      }, {
-        success: function() {
-          return app.collections.posts.trigger('set_cache_ids');
-        }
-      });
+      return this.model.destroy();
     };
 
     PostEditView.prototype.cancel = function() {
@@ -1519,7 +2094,7 @@ window.require.register("views/post_edit_view", function(exports, require, modul
     };
 
     PostEditView.prototype._draftSave = function() {
-      if (this.options.draftModel != null) {
+      if (this.options.newPost || this.model.get('draft')) {
         clearTimeout(this.saveDraftAfterDelay);
         this.saveDraftAfterDelay = setTimeout(this.draftSave, 2000);
         this.keystrokecounter += 1;
@@ -1529,27 +2104,22 @@ window.require.register("views/post_edit_view", function(exports, require, modul
       }
     };
 
-    PostEditView.prototype.draftSave = function(e) {
-      var obj,
-        _this = this;
+    PostEditView.prototype.draftSave = function() {
+      var _this = this;
 
-      if (this.options.draftModel != null) {
-        obj = {};
-        obj.title = this.$('.title textarea').val();
-        obj.body = this.$('.body textarea').val();
-        return this.options.draftModel.save(obj, {
-          success: function(model) {
-            app.collections.drafts.add(model, {
-              merge: true
-            });
-            return _this.$('#last-saved').html("Last saved at " + new moment().format('h:mm:ss a'));
-          }
-        });
-      }
+      this.model.set('title', this.$('.title textarea').val());
+      this.model.set('body', this.$('.body textarea').val());
+      this.model.set('draft', true);
+      return this.model.save(null, {
+        success: function(model) {
+          return _this.$('#last-saved').html("Last saved at " + new moment().format('h:mm:ss a'));
+        }
+      });
     };
 
     PostEditView.prototype.onClose = function() {
-      return clearTimeout(this.saveDraftAfterDelay);
+      clearTimeout(this.saveDraftAfterDelay);
+      return app.models.editing = null;
     };
 
     return PostEditView;
@@ -1577,12 +2147,22 @@ window.require.register("views/post_view", function(exports, require, module) {
 
     PostView.prototype.initialize = function() {
       this.debouncedRender = _.debounce(this.render, 25);
-      this.listenTo(this.model, 'change', this.debouncedRender);
+      this.listenTo(this.model, 'change sync', this.debouncedRender);
+      this.listenTo(this.model, 'destroy', this.remove);
+      this.listenTo(app.state, 'change:online', function(model, online) {
+        if (!online) {
+          return this.render();
+        }
+      });
+      if (!this.options.page) {
+        this.model.view = this;
+      }
       return window.post = this;
     };
 
     PostView.prototype.events = {
-      'dblclick': 'doubleclick'
+      'dblclick': 'doubleclick',
+      'click span.starred': 'toggleStarred'
     };
 
     PostView.prototype.render = function() {
@@ -1595,6 +2175,8 @@ window.require.register("views/post_view", function(exports, require, module) {
           data.page = true;
         }
         this.$el.html(PostTemplate(data));
+      } else if (!app.state.isOnline()) {
+        this.$el.html("<div class='error show'>Sorry, this post can't be loaded while you are offline</div>");
       } else {
         this.$el.html("<h2>Loading post... " + (app.templates.throbber('show', '32px')) + "</h2>");
       }
@@ -1618,6 +2200,14 @@ window.require.register("views/post_view", function(exports, require, module) {
 
     PostView.prototype.doubleclick = function() {
       return app.router.navigate("/node/" + (this.model.get('nid')) + "/edit", true);
+    };
+
+    PostView.prototype.toggleStarred = function() {
+      if (this.model.get('starred')) {
+        return this.model.save('starred', false);
+      } else {
+        return this.model.save('starred', true);
+      }
     };
 
     return PostView;
@@ -1649,10 +2239,6 @@ window.require.register("views/posts_view", function(exports, require, module) {
     PostsView.prototype.initialize = function() {
       var _this = this;
 
-      this.debouncedCachePostPositions = _.debounce((function() {
-        return _this.cachePostPositions();
-      }), 500);
-      this.listenTo(this.collection, 'reset add remove', this.debouncedCachePostPositions);
       this.listenTo(this.collection, 'reset', this.render);
       this.listenTo(this.collection, 'add', this.addOne);
       this.listenTo(this.collection, 'loading-posts', this.showLoading);
@@ -1699,8 +2285,7 @@ window.require.register("views/posts_view", function(exports, require, module) {
       }
       this.addAll();
       _.defer(function() {
-        console.log("rendering postsView", (new Date().getTime() - performance.timing.navigationStart) / 1000);
-        return _this.debouncedCachePostPositions();
+        return console.log("rendering postsView", (new Date().getTime() - performance.timing.navigationStart) / 1000);
       });
       return this;
     };
@@ -1725,7 +2310,7 @@ window.require.register("views/posts_view", function(exports, require, module) {
     PostsView.prototype.addAll = function() {
       var post, _i, _len, _ref1, _results;
 
-      _ref1 = this.collection.models;
+      _ref1 = this.collection.getPosts();
       _results = [];
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         post = _ref1[_i];
@@ -1748,39 +2333,19 @@ window.require.register("views/posts_view", function(exports, require, module) {
       return app.eventBus.trigger('postsView:active', false);
     };
 
-    PostsView.prototype.cachePostPositions = function() {
-      var post, _i, _len, _ref1, _results;
-
-      this.postPositions = [];
-      _ref1 = this.$('.post');
-      _results = [];
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        post = _ref1[_i];
-        _results.push(this.postPositions.push($(post).offset().top));
-      }
-      return _results;
-    };
-
     PostsView.prototype.scrollNext = function() {
-      var curPosition, nextY;
+      var nextY;
 
-      curPosition = $(window).scrollTop() + 81;
-      nextY = _.find(this.postPositions, function(y) {
-        return curPosition < y;
-      });
+      nextY = this.collection.posNext();
       if (!_.isUndefined(nextY)) {
         return window.scrollTo(0, nextY - 80);
       }
     };
 
     PostsView.prototype.scrollPrevious = function() {
-      var copyPostPostions, curPosition, prevY;
+      var prevY;
 
-      curPosition = $(window).scrollTop() + 79;
-      copyPostPostions = this.postPositions.slice(0).reverse();
-      prevY = _.find(copyPostPostions, function(y) {
-        return curPosition > y;
-      });
+      prevY = this.collection.posPrev();
       if (!_.isUndefined(prevY)) {
         return window.scrollTo(0, prevY - 80);
       }
@@ -1869,9 +2434,14 @@ window.require.register("views/search_view", function(exports, require, module) 
     SearchView.prototype.id = 'search-page';
 
     SearchView.prototype.initialize = function() {
-      this.listenTo(this.collection, 'reset', this.renderResults);
+      var _this = this;
+
+      this.listenTo(this.collection, 'search:complete', this.renderResults);
       this.listenTo(this.collection, 'search:started', this.showThrobber);
-      return this.listenTo(this.collection, 'search:complete', this.hideThrobber);
+      this.listenTo(this.collection, 'search:complete', this.hideThrobber);
+      return this.listenTo(app.eventBus, 'distance:scrollTop', function(scrollTop) {
+        return _this.collection.scrollTop = scrollTop;
+      });
     };
 
     SearchView.prototype.events = {
@@ -1886,13 +2456,16 @@ window.require.register("views/search_view", function(exports, require, module) 
       this.renderResults();
       _.defer(function() {
         _this.$('input').val(_this.collection.query_str);
-        return _this.$('input').focus();
+        _this.$('input').focus();
+        if (_this.collection.scrollTop != null) {
+          return $(window).scrollTop(_this.collection.scrollTop);
+        }
       });
       return this;
     };
 
     SearchView.prototype.renderResults = function() {
-      var result, resultView, _i, _len, _ref1;
+      var query, result, resultView, _i, _j, _len, _len1, _ref1, _ref2;
 
       this.$('#search-results').empty();
       if ((this.collection.total != null) && (this.collection.searchtime != null)) {
@@ -1913,6 +2486,15 @@ window.require.register("views/search_view", function(exports, require, module) 
       } else if (this.collection.total === 0) {
         this.$('#search-results').html('<h4>No matches</h4>');
         this.$('.js-loading').hide();
+      } else {
+        if (this.collection.queries != null) {
+          this.$('#search-results').append("<h3>Common queries</h3><ul class='common-queries'>");
+          _ref2 = this.collection.queries;
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            query = _ref2[_j];
+            this.$('#search-results ul').append("<li><a href='/search/" + query + "'>" + query + "</a></li>");
+          }
+        }
       }
       return this;
     };
@@ -1942,6 +2524,77 @@ window.require.register("views/search_view", function(exports, require, module) 
     };
 
     return SearchView;
+
+  })(Backbone.View);
+  
+});
+window.require.register("views/starred_view", function(exports, require, module) {
+  var StarredView, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  module.exports = StarredView = (function(_super) {
+    __extends(StarredView, _super);
+
+    function StarredView() {
+      _ref = StarredView.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    StarredView.prototype.className = "starred-posts-page";
+
+    StarredView.prototype.initialize = function() {
+      return this.listenTo(this.collection, 'sync reset add', this.render);
+    };
+
+    StarredView.prototype.events = {
+      'click a': 'clickHandler'
+    };
+
+    StarredView.prototype.render = function() {
+      this.$el.html("<h1>Starred Posts</h1><ul>");
+      this.addAll();
+      return this;
+    };
+
+    StarredView.prototype.addAll = function() {
+      var group, grouped, post, week, _results;
+
+      if (this.collection.length === 0) {
+        return this.$el.append("<p>Posts you star will show up here!</p>");
+      }
+      grouped = this.collection.groupBy(function(post) {
+        return moment(post.get('created')).local().format('YYYY-M');
+      });
+      _results = [];
+      for (week in grouped) {
+        group = grouped[week];
+        this.$('ul').append("<h4>" + (moment(group[0].get('created')).local().format("MMMM YYYY")) + "</h4>");
+        _results.push((function() {
+          var _i, _len, _results1;
+
+          _results1 = [];
+          for (_i = 0, _len = group.length; _i < _len; _i++) {
+            post = group[_i];
+            _results1.push(this.$('ul').append("<li class='link'><a href='node/" + (post.get('nid')) + "'>" + (post.get('title')) + " - <em>" + (moment(post.get('created')).local().format('MMMM D')) + "</em></a></li>"));
+          }
+          return _results1;
+        }).call(this));
+      }
+      return _results;
+    };
+
+    StarredView.prototype.clickHandler = function(e) {
+      var href;
+
+      e.preventDefault();
+      href = $(e.currentTarget).attr('href');
+      return app.router.navigate(href, {
+        trigger: true
+      });
+    };
+
+    return StarredView;
 
   })(Backbone.View);
   
@@ -2119,7 +2772,13 @@ window.require.register("views/templates/post", function(exports, require, modul
         if (this.page) {
           __out.push('\n  <h1>');
           __out.push(__sanitize(this.title));
-          __out.push('</h1>\n');
+          __out.push('</h1><span class="starred">');
+          if (this.starred) {
+            __out.push('starred');
+          } else {
+            __out.push('not starred');
+          }
+          __out.push('</span>\n');
         } else {
           __out.push('\n  <h1><a href="node/');
           __out.push(this.nid);
